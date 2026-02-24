@@ -64,10 +64,21 @@ Each version in `/versions/` is fully independent. When working on a version:
 - **Guidelines** (`/guidelines/`): Design and compliance docs
 - **Knowledge** (`/knowledge/`): Cross-version learnings
 
+## Naming Conventions
+
+**All new artifact/document files MUST follow `/guidelines/naming-conventions.md`.**
+
+Pattern: `[CODE][YYMMDD]-[slug](-[increment]).ext`
+
+Example: `COMP260206-market-leaders.md`, `JTBD260206-onboarding-flow.md`
+
+Artifacts save to `artifacts/`. See the full reference for codes and rules.
+
 ## AI Behavior Rules
 
 When working in this repo:
 - Check which version you're working in before making changes
+- Follow naming conventions in `/guidelines/naming-conventions.md` for all new files
 - Document learnings using `/knowledge:during`
 - Don't share code between versions (only fixtures/guidelines/knowledge)
 - Read `/knowledge/` before making architectural decisions
