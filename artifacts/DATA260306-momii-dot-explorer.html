@@ -75,7 +75,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        min-width: 220px;
+        min-width: 240px;
       }
 
       .logo {
@@ -122,7 +122,7 @@
         align-items: center;
         gap: 8px;
         user-select: none;
-        transition: transform 80ms ease, border-color 120ms ease, background 120ms ease;
+        transition: transform 80ms ease, border-color 120ms ease, background 120ms ease, opacity 120ms ease;
       }
 
       .btn:hover {
@@ -131,6 +131,11 @@
 
       .btn:active {
         transform: translateY(1px);
+      }
+
+      .btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
       }
 
       .btn.primary {
@@ -247,53 +252,6 @@
         border-color: rgba(255, 255, 255, 0.2);
       }
 
-      .list {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-top: 10px;
-      }
-
-      .list-item {
-        border: 1px solid var(--border);
-        background: rgba(17, 28, 53, 0.35);
-        border-radius: 12px;
-        padding: 10px 10px;
-        cursor: pointer;
-        user-select: none;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .list-item:hover {
-        border-color: rgba(255, 255, 255, 0.2);
-        background: rgba(17, 28, 53, 0.5);
-      }
-
-      .list-item .title {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: -0.01em;
-        line-height: 1.2;
-        word-break: break-word;
-      }
-
-      .list-item .meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        color: var(--muted);
-        font-size: 11px;
-      }
-
-      .badge {
-        padding: 3px 7px;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        background: rgba(17, 28, 53, 0.25);
-      }
-
       #graph {
         height: 100%;
         width: 100%;
@@ -391,6 +349,53 @@
         line-height: 1.35;
       }
 
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .list-item {
+        border: 1px solid var(--border);
+        background: rgba(17, 28, 53, 0.35);
+        border-radius: 12px;
+        padding: 10px 10px;
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .list-item:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        background: rgba(17, 28, 53, 0.5);
+      }
+
+      .list-item .title {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        word-break: break-word;
+      }
+
+      .list-item .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .badge {
+        padding: 3px 7px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(17, 28, 53, 0.25);
+      }
+
       @media (max-width: 1100px) {
         .app {
           grid-template-columns: 1fr;
@@ -407,7 +412,7 @@
           <div class="logo" aria-hidden="true"></div>
           <div>
             <h1>Momii Dot Explorer</h1>
-            <p class="sub">Chọn folder / thả file / paste text → tự chunk thành dots + liên kết</p>
+            <p class="sub">Object-first graph → click object để xem evidence</p>
           </div>
         </div>
 
@@ -417,6 +422,7 @@
           </button>
           <button class="btn" id="btnPickFiles">Add files</button>
           <button class="btn" id="btnPaste">Paste text</button>
+          <button class="btn" id="btnRunOcr" title="OCR ảnh (mặc định tắt)">Run OCR</button>
           <button class="btn" id="btnRefresh" title="Rebuild graph từ selection hiện tại">Refresh</button>
           <button class="btn" id="btnBack" style="display: none">Back</button>
           <button class="btn" id="btnRelayout">Re-layout</button>
@@ -433,31 +439,27 @@
           <div class="stack">
             <div class="drop" id="dropzone">
               <div class="hint">
-                <strong>Cách dùng nhanh</strong>
+                <strong>Cách dùng</strong>
                 <div class="small">
-                  1) Bấm <span class="mono">Load folder</span> và chọn đúng thư mục <span class="mono">MOMII/</span>
-                  (hoặc bấm <span class="mono">Add files</span> / thả file vào đây).<br />
-                  2) Tool sẽ chia nhỏ (chunk) nội dung thành nhiều dots; dots liên kết qua keywords (entities).<br />
-                  3) Mặc định là <span class="mono">Overview theo Object</span> (mỗi file = 1 object). Click object để
-                  xem chi tiết bên trong.<br />
-                  <span class="mono">Refresh</span> chỉ rebuild từ những file bạn đã chọn (nếu file trên disk thay đổi,
-                  bạn cần chọn lại).
-                  <br />
-                  <span class="mono">Lưu ý</span>: file này dùng CDN (Cytoscape, pdf.js, PapaParse) nên cần internet để tải
-                  thư viện; chọn folder (<span class="mono">webkitdirectory</span>) hoạt động tốt nhất trên Chrome/Edge.
+                  1) Bấm <span class="mono">Load folder MOMII</span> và chọn thư mục <span class="mono">MOMII/</span>.<br />
+                  2) Mặc định graph chỉ hiện <span class="mono">Objects</span> (Templates/Personas/Collab/Funnel/Competitors/Auto).<br />
+                  3) Click 1 object → vào <span class="mono">Focus view</span> (chỉ hiện evidence liên quan).<br />
+                  4) <span class="mono">Run OCR</span> (tuỳ chọn) để đọc text trong ảnh và link objects bằng OCR. (Có thể cần chạy qua localhost).<br />
+                  <span class="mono">Lưu ý</span>: file này dùng CDN (Cytoscape, pdf.js, PapaParse) nên cần internet để tải thư viện.
                 </div>
               </div>
             </div>
 
             <div class="row">
-              <input class="field" id="search" placeholder="Search node (tên file / keyword / nội dung)..." />
+              <input class="field" id="search" placeholder="Search (object/evidence)..." />
               <button class="btn" id="btnFind">Find</button>
             </div>
 
             <div class="chips" id="filterChips"></div>
+
             <div class="hint" style="margin-top: 10px">
-              <strong>Objects (files)</strong>
-              <div class="small">Click 1 object để focus và giảm số lượng dots.</div>
+              <strong>Objects</strong>
+              <div class="small">Click để focus. Dùng chips để lọc theo nhóm.</div>
             </div>
             <div class="list" id="objectList"></div>
           </div>
@@ -480,9 +482,7 @@
           <div class="statline" id="statsRight"></div>
         </div>
         <div class="body">
-          <div class="hint" id="detailsHint">
-            Click vào 1 dot để xem chi tiết. Bạn có thể zoom/pan trên graph.
-          </div>
+          <div class="hint" id="detailsHint">Click vào 1 node để xem chi tiết.</div>
           <div class="viewer" id="details" style="display: none"></div>
         </div>
       </div>
@@ -505,7 +505,7 @@
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
           <div>
             <div style="font-weight: 700; font-size: 13px">Paste text</div>
-            <div class="small">Text này sẽ thành 1 “virtual file” và được chunk thành dots.</div>
+            <div class="small">Text này sẽ thành 1 “virtual file” và được parse làm evidence.</div>
           </div>
           <div style="display: flex; gap: 8px">
             <button class="btn" value="cancel">Cancel</button>
@@ -525,18 +525,10 @@
     </dialog>
 
     <script>
-      // pdf.js worker
       if (window.pdfjsLib) {
         window.pdfjsLib.GlobalWorkerOptions.workerSrc =
           "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.js";
       }
-
-      const MAX_TOTAL_NODES = 3500;
-      const MAX_ENTITIES = 700;
-      const MAX_ENTITY_LINKS_PER_CHUNK = 10;
-      const MAX_ENTITY_FREQ_SCAN_CHARS = 2_000_000;
-      const CHUNK_SOFT_LIMIT = 260;
-      const CHUNK_HARD_LIMIT = 520;
 
       const el = (id) => document.getElementById(id);
       const statsLeft = el("statsLeft");
@@ -556,30 +548,27 @@
       const searchInput = el("search");
       const objectList = el("objectList");
 
-      const state = {
-        files: /** @type {File[]} */ ([]),
-        cy: null,
-        nodeData: new Map(),
-        typeFilter: "all",
-        view: "overview", // overview | object
-        currentObjectId: null,
-        fullElements: /** @type {any[]} */ ([]),
-        overviewElements: /** @type {any[]} */ ([]),
-        rootByNodeId: new Map(),
-        objectIndex: new Map(), // fileNodeId -> {id,label,path,ext,size,counts,entityCounts(Map)}
+      const LIMITS = {
+        maxObjectsPerGroup: { template: 80, persona: 80, collab: 140, funnel: 140, competitor: 220, auto: 160 },
+        maxAutoConcepts: 160,
+        maxEvidenceTotal: 3200,
+        maxEvidencePerObjectFocus: 160,
+        maxRelatedObjectsFocus: 28,
+        maxPdfPagesExtractText: 28,
+        maxPdfPagesShow: 80,
+        maxCsvRows: 900,
+        maxChunksPerFile: 900,
+        maxNgramScanChars: 1_600_000,
       };
 
-      const TYPES = [
-        { key: "all", label: "All" },
-        { key: "file", label: "Files" },
-        { key: "section", label: "Sections" },
-        { key: "chunk", label: "Chunks" },
-        { key: "row", label: "CSV rows" },
-        { key: "entity", label: "Entities" },
-        { key: "image", label: "Images" },
-        { key: "pdf", label: "PDF" },
-        { key: "pdf_page", label: "PDF pages" },
-        { key: "note", label: "Notes" },
+      const GROUPS = [
+        { key: "all", label: "All", color: "rgba(148,163,184,0.9)" },
+        { key: "template", label: "Templates", color: "rgba(236,72,153,0.92)" },
+        { key: "persona", label: "Personas", color: "rgba(16,185,129,0.92)" },
+        { key: "collab", label: "Collaboration", color: "rgba(59,130,246,0.92)" },
+        { key: "funnel", label: "Funnels/Strategy", color: "rgba(245,158,11,0.92)" },
+        { key: "competitor", label: "Competitors", color: "rgba(239,68,68,0.92)" },
+        { key: "auto", label: "Auto concepts", color: "rgba(124,58,237,0.92)" },
       ];
 
       const STOPWORDS = new Set(
@@ -677,8 +666,35 @@
           "where",
           "why",
           "how",
+          "momii",
         ].map((t) => foldText(t))
       );
+
+      const CHUNK_SOFT_LIMIT = 260;
+      const CHUNK_HARD_LIMIT = 520;
+
+      const state = {
+        files: /** @type {File[]} */ ([]),
+        cy: null,
+        nodeData: new Map(),
+        view: "overview", // overview | focus
+        groupFilter: "all",
+        currentObjectId: null,
+
+        objects: new Map(),
+        objectKeyToId: new Map(),
+        objectTokenIndex: new Map(),
+
+        evidence: [],
+        evidenceMentions: new Map(),
+        objectMentions: new Map(),
+        coWeights: new Map(),
+
+        overviewElements: [],
+        ocrByImageKey: new Map(),
+        objectUrls: [],
+        status: "",
+      };
 
       function foldText(input) {
         try {
@@ -689,6 +705,11 @@
         } catch {
           return (input || "").toLowerCase();
         }
+      }
+
+      function normalizeForMatch(input) {
+        const folded = foldText(input);
+        return folded.replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
       }
 
       function clamp(n, min, max) {
@@ -709,7 +730,6 @@
       }
 
       function hashString(str) {
-        // FNV-1a-ish 32-bit
         let h = 2166136261;
         for (let i = 0; i < str.length; i++) {
           h ^= str.charCodeAt(i);
@@ -744,9 +764,206 @@
         return tokens;
       }
 
+      function containsPhraseNormalized(hayNorm, phraseNorm) {
+        if (!hayNorm || !phraseNorm) return false;
+        return (" " + hayNorm + " ").includes(" " + phraseNorm + " ");
+      }
+
+      function makeNode(id, type, label, extra = {}) {
+        return { data: { id, type, label, ...extra } };
+      }
+
+      function makeEdge(id, source, target, rel, extra = {}) {
+        return { data: { id, source, target, rel, ...extra } };
+      }
+
+      function escapeText(s) {
+        return String(s || "");
+      }
+
+      function makeTextPreview(text) {
+        const t = (text || "").trim();
+        if (!t) return "";
+        return t.length > 900 ? t.slice(0, 900) + " …" : t;
+      }
+
+      function setStatus(text) {
+        state.status = text || "";
+        setStats();
+      }
+
+      function setStats() {
+        const fileCount = state.files.length;
+        const nodeCount = state.cy ? state.cy.nodes().length : 0;
+        const edgeCount = state.cy ? state.cy.edges().length : 0;
+        const objCount = state.objects.size;
+        const evCount = state.evidence.length;
+        const ocrCount = state.ocrByImageKey.size;
+
+        statsLeft.innerHTML = `
+          <span class="stat">Files: <span class="mono">${fileCount}</span></span>
+          <span class="stat">Objects: <span class="mono">${objCount}</span></span>
+          <span class="stat">Evidence: <span class="mono">${evCount}</span></span>
+        `;
+        statsMid.innerHTML = `
+          <span class="stat">Nodes: <span class="mono">${nodeCount}</span></span>
+          <span class="stat">Edges: <span class="mono">${edgeCount}</span></span>
+          <span class="stat">View: <span class="mono">${state.view}</span></span>
+        `;
+        statsRight.innerHTML = `
+          <span class="stat">Group: <span class="mono">${state.groupFilter}</span></span>
+          <span class="stat">OCR: <span class="mono">${ocrCount}</span></span>
+          ${state.status ? `<span class="stat">Status: <span class="mono">${escapeText(state.status)}</span></span>` : ""}
+        `;
+      }
+
+      function setFiltersUI() {
+        filterChips.innerHTML = "";
+        for (const g of GROUPS) {
+          const c = document.createElement("div");
+          c.className = "chip";
+          c.textContent = g.label;
+          c.dataset.key = g.key;
+          if (g.key === state.groupFilter) {
+            c.style.borderColor = "rgba(124, 58, 237, 0.6)";
+            c.style.color = "rgba(255,255,255,0.92)";
+          }
+          c.addEventListener("click", () => {
+            state.groupFilter = g.key;
+            applyGroupFilterToGraph();
+            setFiltersUI();
+            renderObjectList();
+            setStats();
+          });
+          filterChips.appendChild(c);
+        }
+      }
+
+      function applyGroupFilterToGraph() {
+        if (!state.cy) return;
+        if (state.view !== "overview") return;
+
+        const key = state.groupFilter;
+        if (key === "all") {
+          state.cy.nodes().style("display", "element");
+          state.cy.edges().style("display", "element");
+          return;
+        }
+
+        state.cy.nodes().forEach((n) => {
+          n.style("display", n.data("group") === key ? "element" : "none");
+        });
+        state.cy.edges().forEach((e) => {
+          const s = e.source();
+          const t = e.target();
+          const visible = s.style("display") !== "none" && t.style("display") !== "none";
+          e.style("display", visible ? "element" : "none");
+        });
+      }
+
+      function buildCy(elements) {
+        if (state.cy) state.cy.destroy();
+
+        state.cy = cytoscape({
+          container: el("graph"),
+          elements,
+          wheelSensitivity: 0.22,
+          minZoom: 0.12,
+          maxZoom: 2.4,
+          layout: { name: "cose", animate: false, padding: 30, nodeRepulsion: 8200 },
+          style: [
+            {
+              selector: "node",
+              style: {
+                label: "data(label)",
+                "font-size": 9,
+                color: "rgba(255,255,255,0.88)",
+                "text-outline-color": "rgba(0,0,0,0.35)",
+                "text-outline-width": 2,
+                "text-wrap": "ellipsis",
+                "text-max-width": 150,
+                width: "mapData(size, 0, 120, 12, 44)",
+                height: "mapData(size, 0, 120, 12, 44)",
+                "border-width": 1,
+                "border-color": "rgba(255,255,255,0.12)",
+                "background-color": "rgba(148,163,184,0.8)",
+              },
+            },
+            {
+              selector: "node[type='object']",
+              style: {
+                "background-color": "data(color)",
+                "font-size": 10,
+                "text-max-width": 170,
+                width: "mapData(size, 0, 220, 18, 58)",
+                height: "mapData(size, 0, 220, 18, 58)",
+              },
+            },
+            {
+              selector: "node[type='evidence']",
+              style: {
+                "background-color": "rgba(148,163,184,0.55)",
+                "font-size": 8,
+                "text-max-width": 110,
+                width: 12,
+                height: 12,
+              },
+            },
+            {
+              selector: "node:selected",
+              style: {
+                "border-width": 2,
+                "border-color": "rgba(255,255,255,0.72)",
+                "background-blacken": -0.2,
+              },
+            },
+            {
+              selector: "edge",
+              style: {
+                width: "mapData(weight, 0, 16, 1, 4)",
+                "line-color": "rgba(255,255,255,0.12)",
+                "curve-style": "bezier",
+              },
+            },
+            { selector: "edge[rel='co']", style: { "line-color": "rgba(255,255,255,0.14)" } },
+            {
+              selector: "edge[rel='mentions']",
+              style: {
+                width: 1,
+                "line-color": "rgba(124,58,237,0.22)",
+                "target-arrow-color": "rgba(124,58,237,0.26)",
+                "target-arrow-shape": "triangle",
+              },
+            },
+          ],
+        });
+
+        state.cy.on("tap", "node", (evt) => {
+          const node = evt.target;
+          const data = state.nodeData.get(node.id());
+          if (!data) return;
+          if (data.type === "object") return showObject(node.id());
+          showDetails(node.id());
+        });
+
+        state.cy.on("tap", (evt) => {
+          if (evt.target === state.cy) {
+            details.style.display = "none";
+            detailsHint.style.display = "block";
+          }
+        });
+
+        setStats();
+        setFiltersUI();
+      }
+
+      function relayout() {
+        if (!state.cy) return;
+        state.cy.layout({ name: "cose", animate: false, padding: 30, nodeRepulsion: 8200 }).run();
+      }
+
       function splitMarkdownToSections(markdown) {
         const lines = markdown.split(/\r?\n/);
-        /** @type {{title: string, level: number, body: string}[]} */
         const sections = [];
 
         let cur = { title: "Intro", level: 0, body: "" };
@@ -770,10 +987,8 @@
           .map((b) => b.trim())
           .filter(Boolean);
 
-        /** @type {string[]} */
         const chunks = [];
         for (const b of blocks) {
-          // split bullets
           const bulletLines = b
             .split("\n")
             .map((l) => l.trim())
@@ -802,7 +1017,6 @@
             continue;
           }
 
-          // sentence-ish split
           const sentences = b
             .split(/(?<=[.!?。！？;:])\s+/g)
             .map((s) => s.trim())
@@ -838,815 +1052,25 @@
         return { title, text: body };
       }
 
-      function makeNode(id, type, label, extra = {}) {
-        return { data: { id, type, label, ...extra } };
-      }
-
-      function makeEdge(id, source, target, rel, extra = {}) {
-        return { data: { id, source, target, rel, ...extra } };
-      }
-
-      function setStats() {
-        const fileCount = state.files.length;
-        const nodeCount = state.cy ? state.cy.nodes().length : 0;
-        const edgeCount = state.cy ? state.cy.edges().length : 0;
-
-        statsLeft.innerHTML = `
-          <span class="stat">Files: <span class="mono">${fileCount}</span></span>
-        `;
-        statsMid.innerHTML = `
-          <span class="stat">Nodes: <span class="mono">${nodeCount}</span></span>
-          <span class="stat">Edges: <span class="mono">${edgeCount}</span></span>
-        `;
-        statsRight.innerHTML = `
-          <span class="stat">Filter: <span class="mono">${state.typeFilter}</span></span>
-        `;
-      }
-
-      function setFiltersUI() {
-        filterChips.innerHTML = "";
-        for (const t of TYPES) {
-          const c = document.createElement("div");
-          c.className = "chip";
-          c.textContent = t.label;
-          c.dataset.key = t.key;
-          if (t.key === state.typeFilter) {
-            c.style.borderColor = "rgba(124, 58, 237, 0.6)";
-            c.style.color = "rgba(255,255,255,0.92)";
-          }
-          c.addEventListener("click", () => {
-            state.typeFilter = t.key;
-            applyFilter();
-            setFiltersUI();
-            setStats();
-          });
-          filterChips.appendChild(c);
-        }
-      }
-
-      function applyFilter() {
-        if (!state.cy) return;
-        const key = state.typeFilter;
-        if (key === "all") {
-          state.cy.nodes().style("display", "element");
-          state.cy.edges().style("display", "element");
-          return;
-        }
-        state.cy.nodes().forEach((n) => {
-          n.style("display", n.data("type") === key ? "element" : "none");
-        });
-        // show edges only if both ends visible
-        state.cy.edges().forEach((e) => {
-          const s = e.source();
-          const t = e.target();
-          const visible = s.style("display") !== "none" && t.style("display") !== "none";
-          e.style("display", visible ? "element" : "none");
-        });
-      }
-
-      function buildCy(elements) {
-        if (state.cy) state.cy.destroy();
-
-        state.cy = cytoscape({
-          container: el("graph"),
-          elements,
-          wheelSensitivity: 0.22,
-          minZoom: 0.12,
-          maxZoom: 2.4,
-          layout: { name: "cose", animate: false, padding: 30, nodeRepulsion: 6000 },
-          style: [
-            {
-              selector: "node",
-              style: {
-                label: "data(label)",
-                "font-size": 9,
-                color: "rgba(255,255,255,0.88)",
-                "text-outline-color": "rgba(0,0,0,0.35)",
-                "text-outline-width": 2,
-                "text-wrap": "ellipsis",
-                "text-max-width": 110,
-                "background-color": "rgba(148,163,184,0.75)",
-                width: "mapData(size, 0, 220, 14, 36)",
-                height: "mapData(size, 0, 220, 14, 36)",
-                "border-width": 1,
-                "border-color": "rgba(255,255,255,0.12)",
-              },
-            },
-            {
-              selector: "node[type='file']",
-              style: {
-                "background-color": "rgba(59,130,246,0.9)",
-                width: "mapData(size, 0, 400, 22, 52)",
-                height: "mapData(size, 0, 400, 22, 52)",
-                "font-size": 10,
-                "text-max-width": 160,
-              },
-            },
-            {
-              selector: "node[type='section']",
-              style: { "background-color": "rgba(16,185,129,0.9)", width: 16, height: 16 },
-            },
-            {
-              selector: "node[type='chunk']",
-              style: { "background-color": "rgba(236,72,153,0.85)", width: 14, height: 14 },
-            },
-            {
-              selector: "node[type='row']",
-              style: { "background-color": "rgba(245,158,11,0.9)", width: 14, height: 14 },
-            },
-            {
-              selector: "node[type='entity']",
-              style: { "background-color": "rgba(124,58,237,0.9)", width: 12, height: 12, "font-size": 8 },
-            },
-            {
-              selector: "node[type='image']",
-              style: { "background-color": "rgba(34,197,94,0.9)", width: 18, height: 18 },
-            },
-            { selector: "node[type='pdf']", style: { "background-color": "rgba(239,68,68,0.9)", width: 18, height: 18 } },
-            {
-              selector: "node[type='pdf_page']",
-              style: { "background-color": "rgba(239,68,68,0.65)", width: 12, height: 12, "font-size": 8 },
-            },
-            {
-              selector: "node:selected",
-              style: {
-                "border-width": 2,
-                "border-color": "rgba(255,255,255,0.72)",
-                "background-blacken": -0.2,
-              },
-            },
-            {
-              selector: "edge",
-              style: {
-                width: 1,
-                "line-color": "rgba(255,255,255,0.14)",
-                "target-arrow-color": "rgba(255,255,255,0.18)",
-                "target-arrow-shape": "triangle",
-                "curve-style": "bezier",
-              },
-            },
-            {
-              selector: "edge[rel='mentions']",
-              style: { "line-color": "rgba(124,58,237,0.22)", "target-arrow-color": "rgba(124,58,237,0.28)" },
-            },
-            { selector: "edge[rel='contains']", style: { "line-color": "rgba(59,130,246,0.18)" } },
-          ],
-        });
-
-        state.cy.on("tap", "node", (evt) => {
-          const node = evt.target;
-          const t = node.data("type");
-          if (state.view === "overview" && t === "file") {
-            showObject(node.id());
-            return;
-          }
-          showDetails(node.id());
-        });
-
-        state.cy.on("tap", (evt) => {
-          if (evt.target === state.cy) {
-            details.style.display = "none";
-            detailsHint.style.display = "block";
-          }
-        });
-
-        setStats();
-        setFiltersUI();
-      }
-
-      function relayout() {
-        if (!state.cy) return;
-        state.cy.layout({ name: "cose", animate: false, padding: 30, nodeRepulsion: 6000 }).run();
-      }
-
-      function escapeText(s) {
-        return String(s || "");
-      }
-
-      function makeTextPreview(text) {
-        const t = (text || "").trim();
-        if (!t) return "";
-        return t.length > 900 ? t.slice(0, 900) + " …" : t;
-      }
-
-      function findRelatedChunks(nodeId) {
-        if (!state.cy) return [];
-        const n = state.cy.getElementById(nodeId);
-        if (!n || n.empty()) return [];
-        if (!["chunk", "row", "section"].includes(n.data("type"))) return [];
-
-        // Related = share entity neighbors
-        const entityIds = n
-          .connectedEdges("[rel='mentions']")
-          .targets()
-          .filter((x) => x.data("type") === "entity")
-          .map((x) => x.id());
-
-        const scores = new Map();
-        for (const entId of entityIds) {
-          const ent = state.cy.getElementById(entId);
-          const mentions = ent
-            .connectedEdges("[rel='mentions']")
-            .sources()
-            .filter((x) => ["chunk", "row", "section"].includes(x.data("type")));
-          for (const m of mentions) {
-            if (m.id() === nodeId) continue;
-            scores.set(m.id(), (scores.get(m.id()) || 0) + 1);
-          }
-        }
-        const ranked = [...scores.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12);
-        return ranked.map(([id, score]) => ({ id, score }));
-      }
-
-      async function showDetails(nodeId) {
-        const data = state.nodeData.get(nodeId);
-        if (!data) return;
-
-        detailsHint.style.display = "none";
-        details.style.display = "flex";
-        details.innerHTML = "";
-
-        const title = document.createElement("div");
-        title.style.fontWeight = "800";
-        title.style.fontSize = "13px";
-        title.textContent = data.label || data.name || nodeId;
-        details.appendChild(title);
-
-        const meta = document.createElement("div");
-        meta.className = "kv";
-        meta.innerHTML = "";
-        const addKV = (k, v, mono = false) => {
-          const kk = document.createElement("div");
-          kk.className = "k";
-          kk.textContent = k;
-          const vv = document.createElement("div");
-          vv.textContent = v == null ? "" : String(v);
-          if (mono) vv.classList.add("mono");
-          meta.appendChild(kk);
-          meta.appendChild(vv);
-        };
-
-        addKV("Type", data.type, true);
-        if (data.path) addKV("Path", data.path, true);
-        if (data.ext) addKV("Ext", data.ext, true);
-        if (data.size != null) addKV("Size", `${data.size} bytes`, true);
-        if (data.sectionTitle) addKV("Section", data.sectionTitle);
-        if (data.page != null) addKV("Page", String(data.page), true);
-        details.appendChild(meta);
-
-        if (data.type === "image" && data.objectUrl) {
-          const img = document.createElement("img");
-          img.className = "img";
-          img.alt = data.label || "image";
-          img.src = data.objectUrl;
-          details.appendChild(img);
-        }
-
-        if (data.type === "pdf" || data.type === "pdf_page") {
-          const box = document.createElement("div");
-          box.className = "pdfbox";
-          const canvas = document.createElement("canvas");
-          box.appendChild(canvas);
-          details.appendChild(box);
-
-          const controls = document.createElement("div");
-          controls.className = "row";
-          controls.style.justifyContent = "space-between";
-          controls.innerHTML = `
-            <div class="small">PDF preview (pdf.js)</div>
-            <div style="display:flex; gap:8px">
-              <button class="btn" id="pdfPrev">Prev</button>
-              <button class="btn" id="pdfNext">Next</button>
-            </div>
-          `;
-          details.appendChild(controls);
-
-          const pdfInfo = data.pdf || data;
-          let pdfDoc = null;
-          let pageNum = data.page || 1;
-
-          async function loadPdfIfNeeded() {
-            if (pdfDoc) return;
-            if (!pdfInfo.objectUrl) return;
-            pdfDoc = await window.pdfjsLib.getDocument(pdfInfo.objectUrl).promise;
-          }
-
-          async function renderPage() {
-            await loadPdfIfNeeded();
-            if (!pdfDoc) return;
-            pageNum = clamp(pageNum, 1, pdfDoc.numPages);
-            const page = await pdfDoc.getPage(pageNum);
-            const viewport = page.getViewport({ scale: 1.35 });
-            const ctx = canvas.getContext("2d");
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            await page.render({ canvasContext: ctx, viewport }).promise;
-          }
-
-          details.querySelector("#pdfPrev").addEventListener("click", async () => {
-            pageNum -= 1;
-            await renderPage();
-          });
-          details.querySelector("#pdfNext").addEventListener("click", async () => {
-            pageNum += 1;
-            await renderPage();
-          });
-
-          await renderPage();
-        }
-
-        if (data.text) {
-          const pre = document.createElement("div");
-          pre.className = "pre";
-          pre.textContent = makeTextPreview(data.text);
-          details.appendChild(pre);
-        }
-
-        if (data.type === "entity") {
-          const info = document.createElement("div");
-          info.className = "small";
-          info.textContent = "Tip: entity là keyword chung để nối các chunks/rows có cùng nội dung.";
-          details.appendChild(info);
-        }
-
-        const related = findRelatedChunks(nodeId);
-        if (related.length) {
-          const relTitle = document.createElement("div");
-          relTitle.style.marginTop = "4px";
-          relTitle.style.fontSize = "12px";
-          relTitle.style.fontWeight = "800";
-          relTitle.textContent = "Related";
-          details.appendChild(relTitle);
-
-          const list = document.createElement("div");
-          list.className = "stack";
-          list.style.gap = "8px";
-          for (const r of related) {
-            const nd = state.nodeData.get(r.id);
-            if (!nd) continue;
-            const item = document.createElement("div");
-            item.className = "chip";
-            item.textContent = `${nd.label || r.id} · shared=${r.score}`;
-            item.addEventListener("click", () => {
-              const target = state.cy.getElementById(r.id);
-              if (target && !target.empty()) {
-                state.cy.$("node").unselect();
-                target.select();
-                state.cy.center(target);
-                showDetails(r.id);
-              }
-            });
-            list.appendChild(item);
-          }
-          details.appendChild(list);
-        }
-      }
-
-      function centerOnFirstMatch(query) {
-        if (!state.cy) return;
-        const q = foldText(query);
-        if (!q) return;
-        const nodes = state.cy.nodes().filter((n) => {
-          const d = state.nodeData.get(n.id());
-          if (!d) return false;
-          const hay = foldText((d.label || "") + " " + (d.path || "") + " " + (d.text || ""));
-          return hay.includes(q);
-        });
-        if (!nodes.length) return;
-        const n = nodes[0];
-        state.cy.$("node").unselect();
-        n.select();
-        state.cy.center(n);
-        showDetails(n.id());
-      }
-
-      async function processFilesAndBuildGraph(files) {
-        const localFiles = [...files];
-        state.files = localFiles;
+      function resetGraphStateKeepOcr() {
         state.nodeData.clear();
-        state.rootByNodeId.clear();
-        state.objectIndex.clear();
-
-        /** @type {any[]} */
-        const elements = [];
-
-        /** @type {{nodeId: string, text: string, rootFileId: string}[]} */
-        const mentionCandidates = [];
-
-        function ensureObject(fileNodeId, fileLabel, path, ext, size) {
-          if (state.objectIndex.has(fileNodeId)) return;
-          state.objectIndex.set(fileNodeId, {
-            id: fileNodeId,
-            label: fileLabel,
-            path,
-            ext,
-            size,
-            counts: { section: 0, chunk: 0, row: 0, image: 0, pdf: 0, pdf_page: 0, note: 0 },
-            entityCounts: new Map(),
-          });
-        }
-
-        function indexNodeToFile(rootFileId, nodeId, type) {
-          state.rootByNodeId.set(nodeId, rootFileId);
-          const obj = state.objectIndex.get(rootFileId);
-          if (!obj) return;
-          if (obj.counts[type] != null) obj.counts[type] += 1;
-        }
-
-        const addNode = (node) => {
-          elements.push(node);
-        };
-        const addEdge = (edge) => {
-          elements.push(edge);
-        };
-
-        function remember(nodeId, data) {
-          state.nodeData.set(nodeId, data);
-        }
-
-        function maybeCap() {
-          const nodes = elements.filter((e) => e.data && e.data.id && !e.data.source).length;
-          return nodes < MAX_TOTAL_NODES;
-        }
-
-        for (const file of localFiles) {
-          if (!maybeCap()) break;
-
-          const path = fileKey(file);
-          const ext = safeExt(path);
-          const fhash = hashString(path + ":" + file.size);
-          const fileNodeId = `file:${fhash}`;
-          const fileLabel = path.split("/").pop() || path;
-
-          addNode(makeNode(fileNodeId, "file", fileLabel, { path, ext, size: file.size }));
-          remember(fileNodeId, { id: fileNodeId, type: "file", label: fileLabel, path, ext, size: file.size });
-          ensureObject(fileNodeId, fileLabel, path, ext, file.size);
-
-          if (isImageExt(ext)) {
-            const objectUrl = URL.createObjectURL(file);
-            const imgId = `img:${fhash}`;
-            addNode(makeNode(imgId, "image", fileLabel, { path, ext, size: file.size }));
-            addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + imgId)}`, fileNodeId, imgId, "contains"));
-            remember(imgId, {
-              id: imgId,
-              type: "image",
-              label: fileLabel,
-              path,
-              ext,
-              size: file.size,
-              objectUrl,
-            });
-            indexNodeToFile(fileNodeId, imgId, "image");
-            continue;
-          }
-
-          if (ext === "pdf") {
-            const objectUrl = URL.createObjectURL(file);
-            const pdfId = `pdf:${fhash}`;
-            addNode(makeNode(pdfId, "pdf", fileLabel, { path, ext, size: file.size }));
-            addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + pdfId)}`, fileNodeId, pdfId, "contains"));
-            const pdfMeta = { id: pdfId, type: "pdf", label: fileLabel, path, ext, size: file.size, objectUrl };
-            remember(pdfId, pdfMeta);
-            indexNodeToFile(fileNodeId, pdfId, "pdf");
-
-            // create per-page nodes (cheap: only reads structure)
-            try {
-              const pdfDoc = await window.pdfjsLib.getDocument(objectUrl).promise;
-              const pageCount = pdfDoc.numPages || 0;
-              const maxPages = Math.min(pageCount, 80);
-              for (let p = 1; p <= maxPages; p++) {
-                if (!maybeCap()) break;
-                const pageId = `pdfp:${fhash}:${p}`;
-                addNode(makeNode(pageId, "pdf_page", `p${p}`, { page: p }));
-                addEdge(makeEdge(`e:${hashString(pdfId + "->" + pageId)}`, pdfId, pageId, "contains"));
-                remember(pageId, { id: pageId, type: "pdf_page", label: `Page ${p}`, page: p, pdf: pdfMeta });
-                indexNodeToFile(fileNodeId, pageId, "pdf_page");
-              }
-              if (pageCount > maxPages) {
-                const noteId = `note:${fhash}:pages`;
-                addNode(makeNode(noteId, "note", `…${pageCount - maxPages} pages`, {}));
-                addEdge(makeEdge(`e:${hashString(pdfId + "->" + noteId)}`, pdfId, noteId, "contains"));
-                remember(noteId, { id: noteId, type: "note", label: "Pages capped", text: `PDF có ${pageCount} pages; UI giới hạn hiển thị ${maxPages} pages để giữ nhẹ.` });
-                indexNodeToFile(fileNodeId, noteId, "note");
-              }
-            } catch (e) {
-              const noteId = `note:${fhash}:pdferr`;
-              addNode(makeNode(noteId, "note", "pdf parse error", {}));
-              addEdge(makeEdge(`e:${hashString(pdfId + "->" + noteId)}`, pdfId, noteId, "contains"));
-              remember(noteId, { id: noteId, type: "note", label: "PDF parse error", text: String(e?.message || e) });
-              indexNodeToFile(fileNodeId, noteId, "note");
-            }
-            continue;
-          }
-
-          if (!isTextExt(ext)) {
-            const noteId = `note:${fhash}:bin`;
-            addNode(makeNode(noteId, "note", "unsupported", {}));
-            addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + noteId)}`, fileNodeId, noteId, "contains"));
-            remember(noteId, {
-              id: noteId,
-              type: "note",
-              label: "Unsupported file type",
-              text: `File type ".${ext || "?"}" chưa được parse để chunk.`,
-            });
-            indexNodeToFile(fileNodeId, noteId, "note");
-            continue;
-          }
-
-          let raw = "";
-          try {
-            raw = await readAsText(file);
-          } catch (e) {
-            const noteId = `note:${fhash}:readerr`;
-            addNode(makeNode(noteId, "note", "read error", {}));
-            addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + noteId)}`, fileNodeId, noteId, "contains"));
-            remember(noteId, { id: noteId, type: "note", label: "Read error", text: String(e?.message || e) });
-            indexNodeToFile(fileNodeId, noteId, "note");
-            continue;
-          }
-
-          if (ext === "csv") {
-            const parsed = Papa.parse(raw, { header: true, skipEmptyLines: true });
-            const rows = Array.isArray(parsed.data) ? parsed.data : [];
-            const maxRows = Math.min(rows.length, 900);
-            for (let i = 0; i < maxRows; i++) {
-              if (!maybeCap()) break;
-              const row = rows[i] || {};
-              const rowId = `row:${fhash}:${i + 1}`;
-              const label = `row ${i + 1}`;
-              const text = Object.entries(row)
-                .map(([k, v]) => `${k}: ${String(v ?? "").trim()}`)
-                .filter((x) => !x.endsWith(":"))
-                .join("\n")
-                .trim();
-
-              addNode(makeNode(rowId, "row", label, { rowIndex: i + 1 }));
-              addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + rowId)}`, fileNodeId, rowId, "contains"));
-              remember(rowId, { id: rowId, type: "row", label, path, ext, size: file.size, text });
-              indexNodeToFile(fileNodeId, rowId, "row");
-              if (text) mentionCandidates.push({ nodeId: rowId, text, rootFileId: fileNodeId });
-            }
-            if (rows.length > maxRows) {
-              const noteId = `note:${fhash}:rowcap`;
-              addNode(makeNode(noteId, "note", `…${rows.length - maxRows} rows`, {}));
-              addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + noteId)}`, fileNodeId, noteId, "contains"));
-              remember(noteId, { id: noteId, type: "note", label: "Rows capped", text: `CSV có ${rows.length} rows; UI giới hạn parse ${maxRows} rows.` });
-              indexNodeToFile(fileNodeId, noteId, "note");
-            }
-            continue;
-          }
-
-          if (ext === "html" || ext === "htm") {
-            const { title, text } = textFromHtml(raw);
-            const chunks = chunkTextLoose(text);
-            const maxChunks = Math.min(chunks.length, 900);
-            for (let i = 0; i < maxChunks; i++) {
-              if (!maybeCap()) break;
-              const chunk = chunks[i];
-              const chunkId = `chunk:${fhash}:${i + 1}`;
-              const label = title ? `${title} · ${i + 1}` : `${fileLabel} · ${i + 1}`;
-              addNode(makeNode(chunkId, "chunk", label, {}));
-              addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + chunkId)}`, fileNodeId, chunkId, "contains"));
-              remember(chunkId, { id: chunkId, type: "chunk", label, path, ext, size: file.size, text: chunk });
-              indexNodeToFile(fileNodeId, chunkId, "chunk");
-              mentionCandidates.push({ nodeId: chunkId, text: chunk, rootFileId: fileNodeId });
-            }
-            continue;
-          }
-
-          if (ext === "md" || ext === "txt" || ext === "json") {
-            const sections = ext === "md" ? splitMarkdownToSections(raw) : [{ title: fileLabel, level: 0, body: raw }];
-            let secIndex = 0;
-            for (const s of sections) {
-              if (!maybeCap()) break;
-              secIndex += 1;
-              const secId = `sec:${fhash}:${secIndex}`;
-              const secLabel = s.title || `Section ${secIndex}`;
-              addNode(makeNode(secId, "section", secLabel, { level: s.level || 0 }));
-              addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + secId)}`, fileNodeId, secId, "contains"));
-              remember(secId, {
-                id: secId,
-                type: "section",
-                label: secLabel,
-                path,
-                ext,
-                size: file.size,
-                text: (s.body || "").trim(),
-                sectionTitle: secLabel,
-              });
-              indexNodeToFile(fileNodeId, secId, "section");
-
-              const chunks = chunkTextLoose(s.body || "");
-              const maxChunks = Math.min(chunks.length, 900);
-              for (let i = 0; i < maxChunks; i++) {
-                if (!maybeCap()) break;
-                const chunk = chunks[i];
-                const chunkId = `chunk:${fhash}:${secIndex}:${i + 1}`;
-                const label = `${secLabel} · ${i + 1}`;
-                addNode(makeNode(chunkId, "chunk", label, {}));
-                addEdge(makeEdge(`e:${hashString(secId + "->" + chunkId)}`, secId, chunkId, "contains"));
-                remember(chunkId, { id: chunkId, type: "chunk", label, path, ext, size: file.size, text: chunk, sectionTitle: secLabel });
-                indexNodeToFile(fileNodeId, chunkId, "chunk");
-                mentionCandidates.push({ nodeId: chunkId, text: chunk, rootFileId: fileNodeId });
-              }
-            }
-            continue;
-          }
-        }
-
-        // Entity extraction + linking
-        const freq = new Map();
-        let scannedChars = 0;
-        for (const c of mentionCandidates) {
-          scannedChars += c.text.length;
-          if (scannedChars > MAX_ENTITY_FREQ_SCAN_CHARS) break;
-          for (const tok of tokenize(c.text)) {
-            freq.set(tok, (freq.get(tok) || 0) + 1);
-          }
-        }
-
-        const entityPool = [...freq.entries()]
-          .filter(([, f]) => f >= 2)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, MAX_ENTITIES);
-
-        const entitySet = new Set(entityPool.map(([t]) => t));
-
-        for (const [tok, f] of entityPool) {
-          if (!maybeCap()) break;
-          const entId = `ent:${tok}`;
-          addNode(makeNode(entId, "entity", tok, { freq: f }));
-          remember(entId, { id: entId, type: "entity", label: tok, freq: f, text: `freq=${f}` });
-        }
-
-        for (const c of mentionCandidates) {
-          const toks = tokenize(c.text);
-          if (!toks.length) continue;
-          const counts = new Map();
-          for (const t of toks) {
-            if (!entitySet.has(t)) continue;
-            counts.set(t, (counts.get(t) || 0) + 1);
-          }
-          const top = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, MAX_ENTITY_LINKS_PER_CHUNK);
-          for (const [t, count] of top) {
-            const entId = `ent:${t}`;
-            addEdge(makeEdge(`m:${hashString(c.nodeId + "->" + entId)}`, c.nodeId, entId, "mentions", { count }));
-            const obj = state.objectIndex.get(c.rootFileId);
-            if (obj) obj.entityCounts.set(t, (obj.entityCounts.get(t) || 0) + 1);
-          }
-        }
-
-        state.fullElements = elements;
-        state.overviewElements = buildOverviewElements();
-        state.view = "overview";
-        state.currentObjectId = null;
-        el("btnBack").style.display = "none";
-        buildCy(state.overviewElements);
-        state.typeFilter = "all";
-        applyFilter();
-        setFiltersUI();
-        renderObjectList();
-        setStats();
-      }
-
-      function buildOverviewElements() {
-        /** @type {any[]} */
-        const out = [];
-
-        const objects = [...state.objectIndex.values()];
-        const entitySets = new Map(); // fileId -> Set(entity)
-
-        for (const o of objects) {
-          const totalDots =
-            o.counts.section +
-            o.counts.chunk +
-            o.counts.row +
-            o.counts.image +
-            o.counts.pdf +
-            o.counts.pdf_page +
-            o.counts.note;
-
-          out.push(makeNode(o.id, "file", o.label, { path: o.path, ext: o.ext, size: o.size, size: clamp(totalDots, 0, 400) }));
-          const set = new Set([...o.entityCounts.keys()]);
-          entitySets.set(o.id, set);
-          // keep nodeData as-is (already saved in remember for file)
-        }
-
-        // file-to-file similarity edges (shared entities)
-        const ids = objects.map((o) => o.id);
-        for (let i = 0; i < ids.length; i++) {
-          for (let j = i + 1; j < ids.length; j++) {
-            const a = entitySets.get(ids[i]) || new Set();
-            const b = entitySets.get(ids[j]) || new Set();
-            if (!a.size || !b.size) continue;
-            let shared = 0;
-            for (const x of a) {
-              if (b.has(x)) shared += 1;
-            }
-            if (shared < 3) continue;
-            out.push(makeEdge(`sim:${hashString(ids[i] + "->" + ids[j])}`, ids[i], ids[j], "sim", { shared }));
-          }
-        }
-
-        return out;
-      }
-
-      function renderObjectList() {
-        const objects = [...state.objectIndex.values()].sort((a, b) => (b.size || 0) - (a.size || 0));
-        objectList.innerHTML = "";
-        for (const o of objects) {
-          const totalDots =
-            o.counts.section +
-            o.counts.chunk +
-            o.counts.row +
-            o.counts.image +
-            o.counts.pdf +
-            o.counts.pdf_page +
-            o.counts.note;
-
-          const item = document.createElement("div");
-          item.className = "list-item";
-          item.innerHTML = `
-            <div class="title">${escapeText(o.label)}</div>
-            <div class="meta">
-              <span class="badge">dots ${totalDots}</span>
-              ${o.counts.chunk ? `<span class="badge">chunks ${o.counts.chunk}</span>` : ""}
-              ${o.counts.section ? `<span class="badge">sections ${o.counts.section}</span>` : ""}
-              ${o.counts.row ? `<span class="badge">rows ${o.counts.row}</span>` : ""}
-              ${o.counts.image ? `<span class="badge">images ${o.counts.image}</span>` : ""}
-              ${o.counts.pdf ? `<span class="badge">pdf ${o.counts.pdf}</span>` : ""}
-            </div>
-            <div class="small mono">${escapeText(o.path)}</div>
-          `;
-          item.addEventListener("click", () => showObject(o.id));
-          objectList.appendChild(item);
-        }
-      }
-
-      function showObject(fileNodeId) {
-        if (!state.fullElements.length) return;
-        state.view = "object";
-        state.currentObjectId = fileNodeId;
-        el("btnBack").style.display = "inline-flex";
-
-        const keep = new Set([fileNodeId]);
-        for (const [nodeId, root] of state.rootByNodeId.entries()) {
-          if (root === fileNodeId) keep.add(nodeId);
-        }
-
-        // add entities connected to kept nodes
-        for (const e of state.fullElements) {
-          if (!e?.data) continue;
-          if (!e.data.source) continue;
-          if (e.data.rel !== "mentions") continue;
-          if (keep.has(e.data.source)) keep.add(e.data.target);
-        }
-
-        /** @type {any[]} */
-        const sub = [];
-        for (const e of state.fullElements) {
-          if (!e?.data) continue;
-          if (e.data.source) {
-            if (keep.has(e.data.source) && keep.has(e.data.target)) sub.push(e);
-            continue;
-          }
-          if (keep.has(e.data.id)) {
-            // give nodes a reasonable size hint
-            const d = state.nodeData.get(e.data.id);
-            const size = d?.type === "file" ? 50 : d?.type === "entity" ? 12 : 14;
-            sub.push({ data: { ...e.data, size } });
-          }
-        }
-
-        buildCy(sub);
-        state.typeFilter = "all";
-        setFiltersUI();
-        applyFilter();
-        setStats();
-
-        const n = state.cy.getElementById(fileNodeId);
-        if (n && !n.empty()) {
-          state.cy.$("node").unselect();
-          n.select();
-          state.cy.center(n);
-          showDetails(fileNodeId);
-        }
-      }
-
-      function clearAll() {
-        state.files = [];
-        state.nodeData.clear();
-        if (state.cy) state.cy.destroy();
-        state.cy = null;
-        state.view = "overview";
-        state.currentObjectId = null;
-        state.fullElements = [];
+        state.objects.clear();
+        state.objectKeyToId.clear();
+        state.objectTokenIndex.clear();
+        state.evidence = [];
+        state.evidenceMentions.clear();
+        state.objectMentions.clear();
+        state.coWeights.clear();
         state.overviewElements = [];
-        state.rootByNodeId.clear();
-        state.objectIndex.clear();
-        objectList.innerHTML = "";
+        state.currentObjectId = null;
+        state.view = "overview";
         el("btnBack").style.display = "none";
-        setStats();
+        for (const url of state.objectUrls) {
+          try {
+            URL.revokeObjectURL(url);
+          } catch {}
+        }
+        state.objectUrls = [];
       }
 
       function uniqueFiles(files) {
@@ -1661,7 +1085,829 @@
         return out;
       }
 
-      // UI events
+      function addObject(group, label, synonymsRaw = []) {
+        const keyNorm = normalizeForMatch(label);
+        if (!keyNorm) return null;
+        const k = `${group}:${keyNorm}`;
+        if (state.objectKeyToId.has(k)) return state.objectKeyToId.get(k);
+
+        const color = GROUPS.find((g) => g.key === group)?.color || "rgba(148,163,184,0.9)";
+        const objectId = `obj:${group}:${hashString(k)}`;
+
+        const synRaw = [label, ...synonymsRaw].map((s) => String(s || "").trim()).filter(Boolean);
+        const synNorm = [...new Set(synRaw.map((s) => normalizeForMatch(s)).filter(Boolean))];
+
+        const obj = { id: objectId, type: "object", label, group, color, synonymsRaw: synRaw, synonymsNorm: synNorm, mentions: 0 };
+        state.objects.set(objectId, obj);
+        state.objectKeyToId.set(k, objectId);
+        state.nodeData.set(objectId, obj);
+        return objectId;
+      }
+
+      function buildObjectTokenIndex() {
+        state.objectTokenIndex.clear();
+        for (const obj of state.objects.values()) {
+          const tokens = new Set();
+          for (const s of obj.synonymsNorm) {
+            for (const t of s.split(" ")) {
+              if (t.length < 3) continue;
+              if (STOPWORDS.has(t)) continue;
+              tokens.add(t);
+            }
+          }
+          for (const t of tokens) {
+            if (!state.objectTokenIndex.has(t)) state.objectTokenIndex.set(t, new Set());
+            state.objectTokenIndex.get(t).add(obj.id);
+          }
+        }
+      }
+
+      function seedFixedObjects() {
+        // Collaboration features + scenarios
+        addObject("collab", "Shared Folder", ["Share Folder", "folder chung"]);
+        addObject("collab", "Board", ["Shared Board", "Event board", "Board invite"]);
+        addObject("collab", "Circle", ["Private Circle", "circle"]);
+        addObject("collab", "Gift Drop", ["gift", "drop"]);
+        addObject("collab", "Send-to-friend", ["send to friend", "gửi cho bạn"]);
+        addObject("collab", "Event Wall", ["wall"]);
+        addObject("collab", "Best Friend Exchange", ["best friend"]);
+        addObject("collab", "Study Group", ["accountability"]);
+        addObject("collab", "Club Showcase", ["club"]);
+
+        // Funnels / strategy frameworks
+        addObject("funnel", "AARRR", ["Pirate Metrics", "Acquisition Activation Retention Revenue Referral"]);
+        addObject("funnel", "Hook Model", ["Trigger", "Action", "Variable Reward", "Investment", "Nir Eyal"]);
+        addObject("funnel", "Momii Journey", ["Enter", "Delight", "Create", "Connect", "Return", "Belong", "Bring"]);
+
+        // Template strategy options
+        addObject("funnel", "Template as Event Kit", ["Event Kit"]);
+        addObject("funnel", "Template as Social Currency", ["Social Currency"]);
+        addObject("funnel", "Template as Seasonal Collection", ["Seasonal Collection", "seasonal drops", "template drops"]);
+      }
+
+      function extractTemplateCandidates(rawText) {
+        const out = new Set();
+        const lines = rawText.split(/\r?\n/);
+        for (const line of lines) {
+          const m1 = /^\s*\d+\.\s*([A-Za-z0-9][^:]{2,80}?)\s*:\s*/.exec(line);
+          if (m1) out.add(m1[1].trim());
+          const m2 = /^\s*[-*]\s*\*\*([^*]{3,80}?)\*\*\s*:\s*/.exec(line);
+          if (m2) out.add(m2[1].trim());
+        }
+        return [...out].filter((x) => x.length <= 60);
+      }
+
+      function extractPersonaCandidates(rawText) {
+        const out = new Set();
+        const re = /\*\*([^*]{3,80}?)\*\*/g;
+        let m;
+        while ((m = re.exec(rawText))) {
+          const s = m[1].trim();
+          const sn = normalizeForMatch(s);
+          if (!sn) continue;
+          const ok =
+            sn.includes("student") ||
+            sn.includes("sinh vien") ||
+            sn.includes("journal") ||
+            sn.includes("introvert") ||
+            sn.includes("privacy") ||
+            sn.includes("gen z") ||
+            sn.includes("daily");
+          if (ok) out.add(s);
+        }
+        return [...out].filter((x) => x.length <= 60);
+      }
+
+      function extractCompetitorsFromCsvRow(row) {
+        const keys = Object.keys(row || {});
+        const foldedKeys = keys.map((k) => [k, normalizeForMatch(k)]);
+        const appKey =
+          foldedKeys.find(([, fk]) => fk === "ung dung")?.[0] ||
+          foldedKeys.find(([, fk]) => fk.includes("ung dung"))?.[0] ||
+          foldedKeys.find(([, fk]) => fk === "app")?.[0] ||
+          foldedKeys.find(([, fk]) => fk.includes("application"))?.[0];
+        const v = appKey ? row[appKey] : null;
+        const name = String(v || "").trim();
+        if (!name || name.length > 60) return null;
+        return name;
+      }
+
+      function buildAutoConceptsFromEvidence() {
+        const freq = new Map();
+        let scanned = 0;
+        for (const ev of state.evidence) {
+          if (!ev.text) continue;
+          scanned += ev.text.length;
+          if (scanned > LIMITS.maxNgramScanChars) break;
+          const toks = tokenize(ev.text);
+          if (toks.length < 2) continue;
+          for (let i = 0; i < toks.length; i++) {
+            for (let n = 2; n <= 4; n++) {
+              if (i + n > toks.length) continue;
+              const gram = toks.slice(i, i + n).join(" ");
+              if (gram.length > 34) continue;
+              if (gram.includes("option") || gram.includes("scenario")) continue;
+              freq.set(gram, (freq.get(gram) || 0) + 1);
+            }
+          }
+        }
+
+        const existing = new Set();
+        for (const obj of state.objects.values()) existing.add(normalizeForMatch(obj.label));
+
+        const concepts = [...freq.entries()]
+          .filter(([, f]) => f >= 4)
+          .sort((a, b) => b[1] - a[1])
+          .map(([g]) => g)
+          .filter((g) => !existing.has(normalizeForMatch(g)))
+          .slice(0, LIMITS.maxAutoConcepts);
+
+        for (const c of concepts) addObject("auto", c);
+      }
+
+      function detectMentionsForEvidence(ev) {
+        const textNorm = normalizeForMatch((ev.text || "") + " " + (ev.label || "") + " " + (ev.path || ""));
+        if (!textNorm) return new Set();
+
+        const toks = new Set(tokenize(textNorm));
+        const candidates = new Set();
+        for (const t of toks) {
+          const ids = state.objectTokenIndex.get(t);
+          if (!ids) continue;
+          for (const id of ids) candidates.add(id);
+        }
+
+        const mentions = new Set();
+        for (const objectId of candidates) {
+          const obj = state.objects.get(objectId);
+          if (!obj) continue;
+          for (const syn of obj.synonymsNorm) {
+            if (containsPhraseNormalized(textNorm, syn)) {
+              mentions.add(objectId);
+              break;
+            }
+          }
+        }
+        return mentions;
+      }
+
+      function addCoWeight(a, b, w = 1) {
+        if (a === b) return;
+        if (!state.coWeights.has(a)) state.coWeights.set(a, new Map());
+        const m = state.coWeights.get(a);
+        m.set(b, (m.get(b) || 0) + w);
+      }
+
+      function buildOverviewElements() {
+        const out = [];
+        for (const obj of state.objects.values()) {
+          const evs = state.objectMentions.get(obj.id);
+          const mentions = evs ? evs.size : 0;
+          obj.mentions = mentions;
+          out.push(makeNode(obj.id, "object", obj.label, { group: obj.group, color: obj.color, size: clamp(mentions, 0, 220) }));
+        }
+
+        for (const [a, map] of state.coWeights.entries()) {
+          for (const [b, weight] of map.entries()) {
+            if (a >= b) continue;
+            if (weight < 2) continue;
+            out.push(makeEdge(`co:${hashString(a + "->" + b)}`, a, b, "co", { weight: clamp(weight, 0, 16) }));
+          }
+        }
+        return out;
+      }
+
+      function buildFocusElements(objectId) {
+        const out = [];
+        const keepObjects = new Set([objectId]);
+
+        const neigh = state.coWeights.get(objectId) || new Map();
+        const related = [...neigh.entries()].sort((a, b) => b[1] - a[1]).slice(0, LIMITS.maxRelatedObjectsFocus);
+        for (const [id] of related) keepObjects.add(id);
+
+        const evIds = [...(state.objectMentions.get(objectId) || new Set())];
+        const scored = evIds
+          .map((id) => ({ id, score: (state.evidenceMentions.get(id) || new Set()).size }))
+          .sort((a, b) => b.score - a.score)
+          .slice(0, LIMITS.maxEvidencePerObjectFocus);
+        const keepEvidence = new Set(scored.map((x) => x.id));
+
+        for (const oid of keepObjects) {
+          const obj = state.objects.get(oid);
+          if (!obj) continue;
+          const mentions = state.objectMentions.get(oid)?.size || 0;
+          out.push(makeNode(obj.id, "object", obj.label, { group: obj.group, color: obj.color, size: clamp(mentions, 0, 220) }));
+        }
+
+        for (const evid of keepEvidence) {
+          const ev = state.nodeData.get(evid);
+          if (!ev) continue;
+          out.push(makeNode(ev.id, "evidence", ev.label, { size: 1 }));
+          const mentions = state.evidenceMentions.get(evid) || new Set();
+          for (const oid of mentions) {
+            if (!keepObjects.has(oid)) continue;
+            out.push(makeEdge(`m:${hashString(evid + "->" + oid)}`, evid, oid, "mentions", { weight: 1 }));
+          }
+        }
+
+        for (const [rid, weight] of related) {
+          out.push(makeEdge(`cof:${hashString(objectId + "->" + rid)}`, objectId, rid, "co", { weight: clamp(weight, 0, 16) }));
+        }
+
+        return out;
+      }
+
+      function renderOverview() {
+        state.view = "overview";
+        state.currentObjectId = null;
+        el("btnBack").style.display = "none";
+        buildCy(state.overviewElements);
+        applyGroupFilterToGraph();
+        setStats();
+      }
+
+      function renderObjectList() {
+        const all = [];
+        for (const obj of state.objects.values()) {
+          const mentions = state.objectMentions.get(obj.id)?.size || 0;
+          all.push({ id: obj.id, label: obj.label, group: obj.group, mentions });
+        }
+
+        const groupKey = state.groupFilter;
+        const filtered = groupKey === "all" ? all : all.filter((o) => o.group === groupKey);
+        const byGroup = new Map();
+        for (const o of filtered) {
+          if (!byGroup.has(o.group)) byGroup.set(o.group, []);
+          byGroup.get(o.group).push(o);
+        }
+        for (const arr of byGroup.values()) arr.sort((a, b) => b.mentions - a.mentions);
+
+        objectList.innerHTML = "";
+        const groupsToShow = groupKey === "all" ? GROUPS.filter((g) => g.key !== "all") : GROUPS.filter((g) => g.key === groupKey);
+        for (const g of groupsToShow) {
+          const arr = byGroup.get(g.key) || [];
+          if (!arr.length) continue;
+          const cap = LIMITS.maxObjectsPerGroup[g.key] || 120;
+
+          const header = document.createElement("div");
+          header.className = "small";
+          header.style.marginTop = "8px";
+          header.style.fontWeight = "800";
+          header.textContent = `${g.label} (${arr.length})`;
+          objectList.appendChild(header);
+
+          for (const o of arr.slice(0, cap)) {
+            const item = document.createElement("div");
+            item.className = "list-item";
+            item.innerHTML = `
+              <div class="title">${escapeText(o.label)}</div>
+              <div class="meta">
+                <span class="badge">mentions ${o.mentions}</span>
+                <span class="badge">${escapeText(o.group)}</span>
+              </div>
+            `;
+            item.addEventListener("click", () => showObject(o.id));
+            objectList.appendChild(item);
+          }
+          if (arr.length > cap) {
+            const more = document.createElement("div");
+            more.className = "small";
+            more.textContent = `… ${arr.length - cap} more (lọc group để xem rõ hơn)`;
+            objectList.appendChild(more);
+          }
+        }
+      }
+
+      function showObject(objectId) {
+        if (!state.objects.has(objectId)) return;
+        state.view = "focus";
+        state.currentObjectId = objectId;
+        el("btnBack").style.display = "inline-flex";
+
+        buildCy(buildFocusElements(objectId));
+        setStats();
+
+        const n = state.cy.getElementById(objectId);
+        if (n && !n.empty()) {
+          state.cy.$("node").unselect();
+          n.select();
+          state.cy.center(n);
+          showDetails(objectId);
+        }
+      }
+
+      function renderPdfPreview(container, pdfObjectUrl, startPage = 1) {
+        const box = document.createElement("div");
+        box.className = "pdfbox";
+        const canvas = document.createElement("canvas");
+        box.appendChild(canvas);
+        container.appendChild(box);
+
+        const controls = document.createElement("div");
+        controls.className = "row";
+        controls.style.justifyContent = "space-between";
+        controls.innerHTML = `
+          <div class="small">PDF preview (pdf.js)</div>
+          <div style="display:flex; gap:8px">
+            <button class="btn" id="pdfPrev">Prev</button>
+            <button class="btn" id="pdfNext">Next</button>
+          </div>
+        `;
+        container.appendChild(controls);
+
+        let pdfDoc = null;
+        let pageNum = startPage || 1;
+
+        async function loadPdfIfNeeded() {
+          if (pdfDoc) return;
+          if (!pdfObjectUrl) return;
+          pdfDoc = await window.pdfjsLib.getDocument(pdfObjectUrl).promise;
+        }
+
+        async function renderPage() {
+          await loadPdfIfNeeded();
+          if (!pdfDoc) return;
+          pageNum = clamp(pageNum, 1, pdfDoc.numPages);
+          const page = await pdfDoc.getPage(pageNum);
+          const viewport = page.getViewport({ scale: 1.35 });
+          const ctx = canvas.getContext("2d");
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          await page.render({ canvasContext: ctx, viewport }).promise;
+        }
+
+        controls.querySelector("#pdfPrev").addEventListener("click", async () => {
+          pageNum -= 1;
+          await renderPage();
+        });
+        controls.querySelector("#pdfNext").addEventListener("click", async () => {
+          pageNum += 1;
+          await renderPage();
+        });
+
+        renderPage();
+      }
+
+      function makeChip(text, onClick) {
+        const c = document.createElement("div");
+        c.className = "chip";
+        c.textContent = text;
+        if (onClick) c.addEventListener("click", onClick);
+        return c;
+      }
+
+      function getTopRelatedObjects(objectId) {
+        const m = state.coWeights.get(objectId) || new Map();
+        return [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([id, w]) => ({ id, w }));
+      }
+
+      async function showDetails(nodeId) {
+        const data = state.nodeData.get(nodeId);
+        if (!data) return;
+
+        detailsHint.style.display = "none";
+        details.style.display = "flex";
+        details.innerHTML = "";
+
+        const title = document.createElement("div");
+        title.style.fontWeight = "800";
+        title.style.fontSize = "13px";
+        title.textContent = data.label || nodeId;
+        details.appendChild(title);
+
+        const meta = document.createElement("div");
+        meta.className = "kv";
+        const addKV = (k, v, mono = false) => {
+          const kk = document.createElement("div");
+          kk.className = "k";
+          kk.textContent = k;
+          const vv = document.createElement("div");
+          vv.textContent = v == null ? "" : String(v);
+          if (mono) vv.classList.add("mono");
+          meta.appendChild(kk);
+          meta.appendChild(vv);
+        };
+
+        addKV("Type", data.type, true);
+        if (data.type === "object") {
+          addKV("Group", data.group, true);
+          addKV("Mentions", state.objectMentions.get(nodeId)?.size || 0, true);
+          details.appendChild(meta);
+
+          const related = getTopRelatedObjects(nodeId);
+          if (related.length) {
+            const relTitle = document.createElement("div");
+            relTitle.style.marginTop = "6px";
+            relTitle.style.fontSize = "12px";
+            relTitle.style.fontWeight = "800";
+            relTitle.textContent = "Related objects";
+            details.appendChild(relTitle);
+
+            const wrap = document.createElement("div");
+            wrap.className = "chips";
+            for (const r of related) {
+              const obj = state.objects.get(r.id);
+              if (!obj) continue;
+              wrap.appendChild(makeChip(`${obj.label} · co=${r.w}`, () => showObject(obj.id)));
+            }
+            details.appendChild(wrap);
+          }
+
+          const evTitle = document.createElement("div");
+          evTitle.style.marginTop = "8px";
+          evTitle.style.fontSize = "12px";
+          evTitle.style.fontWeight = "800";
+          evTitle.textContent = "Evidence";
+          details.appendChild(evTitle);
+
+          const evIds = [...(state.objectMentions.get(nodeId) || new Set())];
+          const ranked = evIds
+            .map((id) => ({ id, score: (state.evidenceMentions.get(id) || new Set()).size }))
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 40);
+
+          const evWrap = document.createElement("div");
+          evWrap.className = "chips";
+          for (const e of ranked) {
+            const ev = state.nodeData.get(e.id);
+            if (!ev) continue;
+            evWrap.appendChild(
+              makeChip(`${ev.label}`, () => {
+                if (state.view !== "focus") showObject(nodeId);
+                const n = state.cy?.getElementById(ev.id);
+                if (n && !n.empty()) {
+                  state.cy.$("node").unselect();
+                  n.select();
+                  state.cy.center(n);
+                }
+                showDetails(ev.id);
+              })
+            );
+          }
+          details.appendChild(evWrap);
+          return;
+        }
+
+        if (data.path) addKV("Path", data.path, true);
+        if (data.ext) addKV("Ext", data.ext, true);
+        if (data.page != null) addKV("Page", String(data.page), true);
+        if (data.evidenceType) addKV("EvidenceType", data.evidenceType, true);
+        details.appendChild(meta);
+
+        if (data.evidenceType === "image" && data.objectUrl) {
+          const img = document.createElement("img");
+          img.className = "img";
+          img.alt = data.label || "image";
+          img.src = data.objectUrl;
+          details.appendChild(img);
+        }
+
+        if (data.evidenceType === "pdf_page" && data.pdfObjectUrl) {
+          renderPdfPreview(details, data.pdfObjectUrl, data.page || 1);
+        }
+
+        if (data.text) {
+          const pre = document.createElement("div");
+          pre.className = "pre";
+          pre.textContent = makeTextPreview(data.text);
+          details.appendChild(pre);
+        }
+
+        const mentions = state.evidenceMentions.get(nodeId) || new Set();
+        if (mentions.size) {
+          const mtitle = document.createElement("div");
+          mtitle.style.marginTop = "8px";
+          mtitle.style.fontSize = "12px";
+          mtitle.style.fontWeight = "800";
+          mtitle.textContent = "Objects mentioned";
+          details.appendChild(mtitle);
+
+          const wrap = document.createElement("div");
+          wrap.className = "chips";
+          for (const oid of mentions) {
+            const obj = state.objects.get(oid);
+            if (!obj) continue;
+            wrap.appendChild(makeChip(obj.label, () => showObject(obj.id)));
+          }
+          details.appendChild(wrap);
+        }
+      }
+
+      function centerOnFirstMatch(query) {
+        if (!state.cy) return;
+        const q = normalizeForMatch(query);
+        if (!q) return;
+        const nodes = state.cy.nodes().filter((n) => {
+          const d = state.nodeData.get(n.id());
+          if (!d) return false;
+          const hay = normalizeForMatch((d.label || "") + " " + (d.path || "") + " " + (d.text || ""));
+          return hay.includes(q);
+        });
+        if (!nodes.length) return;
+        const n = nodes[0];
+        state.cy.$("node").unselect();
+        n.select();
+        state.cy.center(n);
+        showDetails(n.id());
+      }
+
+      async function buildEvidenceFromFiles(files) {
+        resetGraphStateKeepOcr();
+        state.files = [...files];
+
+        const rawTexts = [];
+        const competitorNames = new Set();
+
+        for (const file of state.files) {
+          if (state.evidence.length >= LIMITS.maxEvidenceTotal) break;
+
+          const path = fileKey(file);
+          const ext = safeExt(path);
+          const base = path.split("/").pop() || path;
+          const fhash = hashString(path + ":" + file.size + ":" + file.lastModified);
+
+          if (isImageExt(ext)) {
+            const objectUrl = URL.createObjectURL(file);
+            state.objectUrls.push(objectUrl);
+            const ocrText = state.ocrByImageKey.get(path) || "";
+            const evId = `ev:img:${fhash}`;
+            const ev = { id: evId, type: "evidence", evidenceType: "image", label: base, path, ext, objectUrl, text: ocrText };
+            state.evidence.push(ev);
+            state.nodeData.set(evId, ev);
+            continue;
+          }
+
+          if (ext === "pdf") {
+            const pdfObjectUrl = URL.createObjectURL(file);
+            state.objectUrls.push(pdfObjectUrl);
+            try {
+              const pdfDoc = await window.pdfjsLib.getDocument(pdfObjectUrl).promise;
+              const pageCount = pdfDoc.numPages || 0;
+              const maxPages = Math.min(pageCount, LIMITS.maxPdfPagesShow);
+
+              for (let p = 1; p <= maxPages; p++) {
+                if (state.evidence.length >= LIMITS.maxEvidenceTotal) break;
+                let pageText = "";
+                if (p <= LIMITS.maxPdfPagesExtractText) {
+                  try {
+                    const page = await pdfDoc.getPage(p);
+                    const content = await page.getTextContent();
+                    pageText = (content.items || []).map((it) => it.str).join(" ").replace(/\s+/g, " ").trim();
+                    if (pageText) rawTexts.push(pageText);
+                  } catch {}
+                }
+
+                const evId = `ev:pdf:${fhash}:${p}`;
+                const ev = {
+                  id: evId,
+                  type: "evidence",
+                  evidenceType: "pdf_page",
+                  label: `${base} · p${p}`,
+                  path,
+                  ext,
+                  page: p,
+                  pdfObjectUrl,
+                  text: pageText,
+                };
+                state.evidence.push(ev);
+                state.nodeData.set(evId, ev);
+              }
+            } catch (e) {
+              const evId = `ev:note:${fhash}:pdferr`;
+              const ev = { id: evId, type: "evidence", evidenceType: "note", label: `${base} · pdf error`, path, ext, text: String(e?.message || e) };
+              state.evidence.push(ev);
+              state.nodeData.set(evId, ev);
+            }
+            continue;
+          }
+
+          if (!isTextExt(ext)) continue;
+
+          let raw = "";
+          try {
+            raw = await readAsText(file);
+          } catch {
+            continue;
+          }
+          if (raw) rawTexts.push(raw);
+
+          if (ext === "csv") {
+            const parsed = Papa.parse(raw, { header: true, skipEmptyLines: true });
+            const rows = Array.isArray(parsed.data) ? parsed.data : [];
+            const maxRows = Math.min(rows.length, LIMITS.maxCsvRows);
+            for (let i = 0; i < maxRows; i++) {
+              if (state.evidence.length >= LIMITS.maxEvidenceTotal) break;
+              const row = rows[i] || {};
+
+              const comp = extractCompetitorsFromCsvRow(row);
+              if (comp) competitorNames.add(comp);
+
+              const text = Object.entries(row)
+                .map(([k, v]) => `${k}: ${String(v ?? "").trim()}`)
+                .filter((x) => !x.endsWith(":"))
+                .join("\n")
+                .trim();
+
+              const evId = `ev:csv:${fhash}:${i + 1}`;
+              const ev = { id: evId, type: "evidence", evidenceType: "csv_row", label: `${base} · row ${i + 1}`, path, ext, text };
+              state.evidence.push(ev);
+              state.nodeData.set(evId, ev);
+            }
+            continue;
+          }
+
+          if (ext === "html" || ext === "htm") {
+            const { title, text } = textFromHtml(raw);
+            const chunks = chunkTextLoose(text);
+            for (let i = 0; i < Math.min(chunks.length, LIMITS.maxChunksPerFile); i++) {
+              if (state.evidence.length >= LIMITS.maxEvidenceTotal) break;
+              const chunk = chunks[i];
+              const evId = `ev:html:${fhash}:${i + 1}`;
+              const label = title ? `${title} · ${i + 1}` : `${base} · ${i + 1}`;
+              const ev = { id: evId, type: "evidence", evidenceType: "chunk", label, path, ext, text: chunk };
+              state.evidence.push(ev);
+              state.nodeData.set(evId, ev);
+            }
+            continue;
+          }
+
+          const sections = ext === "md" ? splitMarkdownToSections(raw) : [{ title: base, level: 0, body: raw }];
+          let secIndex = 0;
+          for (const s of sections) {
+            secIndex += 1;
+            const chunks = chunkTextLoose(s.body || "");
+            for (let i = 0; i < Math.min(chunks.length, LIMITS.maxChunksPerFile); i++) {
+              if (state.evidence.length >= LIMITS.maxEvidenceTotal) break;
+              const chunk = chunks[i];
+              const evId = `ev:${ext}:${fhash}:${secIndex}:${i + 1}`;
+              const label = `${s.title || base} · ${i + 1}`;
+              const ev = { id: evId, type: "evidence", evidenceType: "chunk", label, path, ext, sectionTitle: s.title, text: chunk };
+              state.evidence.push(ev);
+              state.nodeData.set(evId, ev);
+            }
+          }
+        }
+
+        seedFixedObjects();
+
+        const tmpl = new Set();
+        const pers = new Set();
+        for (const t of rawTexts) {
+          for (const x of extractTemplateCandidates(t)) tmpl.add(x);
+          for (const x of extractPersonaCandidates(t)) pers.add(x);
+        }
+        for (const x of tmpl) addObject("template", x);
+        for (const x of pers) addObject("persona", x);
+        for (const x of competitorNames) addObject("competitor", x);
+
+        buildAutoConceptsFromEvidence();
+        buildObjectTokenIndex();
+      }
+
+      function linkEvidenceToObjectsAndBuildCo() {
+        state.evidenceMentions.clear();
+        state.objectMentions.clear();
+        state.coWeights.clear();
+
+        for (const ev of state.evidence) {
+          const mentions = detectMentionsForEvidence(ev);
+          state.evidenceMentions.set(ev.id, mentions);
+
+          for (const oid of mentions) {
+            if (!state.objectMentions.has(oid)) state.objectMentions.set(oid, new Set());
+            state.objectMentions.get(oid).add(ev.id);
+          }
+
+          const ids = [...mentions];
+          if (ids.length < 2) continue;
+          for (let i = 0; i < ids.length; i++) {
+            for (let j = i + 1; j < ids.length; j++) {
+              addCoWeight(ids[i], ids[j], 1);
+              addCoWeight(ids[j], ids[i], 1);
+            }
+          }
+        }
+      }
+
+      function updateButtons() {
+        const hasFiles = state.files.length > 0;
+        el("btnRefresh").disabled = !hasFiles;
+        el("btnRelayout").disabled = !state.cy;
+        el("btnBack").disabled = state.view !== "focus";
+        const hasImages = state.files.some((f) => isImageExt(safeExt(fileKey(f))));
+        el("btnRunOcr").disabled = !hasImages;
+      }
+
+      async function processFilesAndBuildGraph(files) {
+        setStatus("building…");
+        await buildEvidenceFromFiles(files);
+        linkEvidenceToObjectsAndBuildCo();
+        state.overviewElements = buildOverviewElements();
+        buildCy(state.overviewElements);
+        applyGroupFilterToGraph();
+        renderObjectList();
+        setStatus("");
+        updateButtons();
+      }
+
+      function clearAll() {
+        state.files = [];
+        state.nodeData.clear();
+        state.objects.clear();
+        state.objectKeyToId.clear();
+        state.objectTokenIndex.clear();
+        state.evidence = [];
+        state.evidenceMentions.clear();
+        state.objectMentions.clear();
+        state.coWeights.clear();
+        state.overviewElements = [];
+        state.currentObjectId = null;
+        state.view = "overview";
+        state.groupFilter = "all";
+        state.status = "";
+        for (const url of state.objectUrls) {
+          try {
+            URL.revokeObjectURL(url);
+          } catch {}
+        }
+        state.objectUrls = [];
+        objectList.innerHTML = "";
+        el("btnBack").style.display = "none";
+        if (state.cy) state.cy.destroy();
+        state.cy = null;
+        setStats();
+        setFiltersUI();
+        updateButtons();
+      }
+
+      function loadScriptOnce(url, globalName) {
+        return new Promise((resolve, reject) => {
+          if (globalName && window[globalName]) return resolve(window[globalName]);
+          const existing = document.querySelector(`script[data-url="${url}"]`);
+          if (existing) {
+            existing.addEventListener("load", () => resolve(globalName ? window[globalName] : true), { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+          }
+          const s = document.createElement("script");
+          s.src = url;
+          s.async = true;
+          s.dataset.url = url;
+          s.onload = () => resolve(globalName ? window[globalName] : true);
+          s.onerror = () => reject(new Error(`Failed to load ${url}`));
+          document.head.appendChild(s);
+        });
+      }
+
+      async function runOcr() {
+        const images = state.files.filter((f) => isImageExt(safeExt(fileKey(f))));
+        if (!images.length) {
+          setStatus("no images");
+          setTimeout(() => setStatus(""), 1200);
+          return;
+        }
+
+        setStatus("loading OCR…");
+        try {
+          await loadScriptOnce("https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/dist/tesseract.min.js", "Tesseract");
+        } catch {
+          setStatus("OCR load failed (try localhost)");
+          return;
+        }
+
+        setStatus(`OCR 0/${images.length}`);
+        let done = 0;
+        for (const img of images) {
+          const key = fileKey(img);
+          if (state.ocrByImageKey.has(key)) {
+            done += 1;
+            setStatus(`OCR ${done}/${images.length}`);
+            continue;
+          }
+          try {
+            const res = await window.Tesseract.recognize(img, "eng+vie", {
+              logger: (m) => {
+                if (m?.status === "recognizing text" && typeof m.progress === "number") {
+                  const pct = Math.round(m.progress * 100);
+                  setStatus(`OCR ${done}/${images.length} · ${pct}%`);
+                }
+              },
+            });
+            const text = String(res?.data?.text || "").trim();
+            state.ocrByImageKey.set(key, text);
+          } catch {
+            state.ocrByImageKey.set(key, "");
+          }
+          done += 1;
+          setStatus(`OCR ${done}/${images.length}`);
+        }
+
+        setStatus("rebuilding…");
+        await processFilesAndBuildGraph(state.files);
+        setStatus("");
+      }
+
+      // UI
       el("btnPickFolder").addEventListener("click", () => folderPicker.click());
       el("btnPickFiles").addEventListener("click", () => filePicker.click());
       el("btnPaste").addEventListener("click", () => {
@@ -1669,21 +1915,12 @@
         pasteText.value = "";
         pasteDialog.showModal();
       });
+      el("btnRunOcr").addEventListener("click", async () => runOcr());
       el("btnRefresh").addEventListener("click", async () => {
         if (!state.files.length) return;
         await processFilesAndBuildGraph(state.files);
       });
-      el("btnBack").addEventListener("click", () => {
-        if (!state.overviewElements.length) return;
-        state.view = "overview";
-        state.currentObjectId = null;
-        el("btnBack").style.display = "none";
-        buildCy(state.overviewElements);
-        state.typeFilter = "all";
-        setFiltersUI();
-        applyFilter();
-        setStats();
-      });
+      el("btnBack").addEventListener("click", () => renderOverview());
       el("btnRelayout").addEventListener("click", () => relayout());
       el("btnClear").addEventListener("click", () => clearAll());
       el("btnFind").addEventListener("click", () => centerOnFirstMatch(searchInput.value));
@@ -1700,7 +1937,6 @@
         await processFilesAndBuildGraph(files);
       });
 
-      // Drag/drop files
       dropzone.addEventListener("dragover", (e) => {
         e.preventDefault();
         dropzone.classList.add("dragover");
@@ -1723,9 +1959,10 @@
         await processFilesAndBuildGraph(files);
       });
 
-      // init
       setStats();
       setFiltersUI();
+      updateButtons();
     </script>
   </body>
 </html>
+
