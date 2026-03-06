@@ -247,6 +247,53 @@
         border-color: rgba(255, 255, 255, 0.2);
       }
 
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .list-item {
+        border: 1px solid var(--border);
+        background: rgba(17, 28, 53, 0.35);
+        border-radius: 12px;
+        padding: 10px 10px;
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .list-item:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        background: rgba(17, 28, 53, 0.5);
+      }
+
+      .list-item .title {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        word-break: break-word;
+      }
+
+      .list-item .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .badge {
+        padding: 3px 7px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(17, 28, 53, 0.25);
+      }
+
       #graph {
         height: 100%;
         width: 100%;
@@ -371,6 +418,7 @@
           <button class="btn" id="btnPickFiles">Add files</button>
           <button class="btn" id="btnPaste">Paste text</button>
           <button class="btn" id="btnRefresh" title="Rebuild graph từ selection hiện tại">Refresh</button>
+          <button class="btn" id="btnBack" style="display: none">Back</button>
           <button class="btn" id="btnRelayout">Re-layout</button>
           <button class="btn danger" id="btnClear">Clear</button>
         </div>
@@ -390,7 +438,8 @@
                   1) Bấm <span class="mono">Load folder</span> và chọn đúng thư mục <span class="mono">MOMII/</span>
                   (hoặc bấm <span class="mono">Add files</span> / thả file vào đây).<br />
                   2) Tool sẽ chia nhỏ (chunk) nội dung thành nhiều dots; dots liên kết qua keywords (entities).<br />
-                  3) Click 1 dot để xem chi tiết + các dots liên quan.<br />
+                  3) Mặc định là <span class="mono">Overview theo Object</span> (mỗi file = 1 object). Click object để
+                  xem chi tiết bên trong.<br />
                   <span class="mono">Refresh</span> chỉ rebuild từ những file bạn đã chọn (nếu file trên disk thay đổi,
                   bạn cần chọn lại).
                   <br />
@@ -406,6 +455,11 @@
             </div>
 
             <div class="chips" id="filterChips"></div>
+            <div class="hint" style="margin-top: 10px">
+              <strong>Objects (files)</strong>
+              <div class="small">Click 1 object để focus và giảm số lượng dots.</div>
+            </div>
+            <div class="list" id="objectList"></div>
           </div>
         </div>
       </div>
@@ -500,12 +554,19 @@
 
       const filterChips = el("filterChips");
       const searchInput = el("search");
+      const objectList = el("objectList");
 
       const state = {
         files: /** @type {File[]} */ ([]),
         cy: null,
         nodeData: new Map(),
         typeFilter: "all",
+        view: "overview", // overview | object
+        currentObjectId: null,
+        fullElements: /** @type {any[]} */ ([]),
+        overviewElements: /** @type {any[]} */ ([]),
+        rootByNodeId: new Map(),
+        objectIndex: new Map(), // fileNodeId -> {id,label,path,ext,size,counts,entityCounts(Map)}
       };
 
       const TYPES = [
@@ -865,15 +926,21 @@
                 "text-wrap": "ellipsis",
                 "text-max-width": 110,
                 "background-color": "rgba(148,163,184,0.75)",
-                width: 18,
-                height: 18,
+                width: "mapData(size, 0, 220, 14, 36)",
+                height: "mapData(size, 0, 220, 14, 36)",
                 "border-width": 1,
                 "border-color": "rgba(255,255,255,0.12)",
               },
             },
             {
               selector: "node[type='file']",
-              style: { "background-color": "rgba(59,130,246,0.9)", width: 22, height: 22, "font-size": 10 },
+              style: {
+                "background-color": "rgba(59,130,246,0.9)",
+                width: "mapData(size, 0, 400, 22, 52)",
+                height: "mapData(size, 0, 400, 22, 52)",
+                "font-size": 10,
+                "text-max-width": 160,
+              },
             },
             {
               selector: "node[type='section']",
@@ -928,6 +995,11 @@
 
         state.cy.on("tap", "node", (evt) => {
           const node = evt.target;
+          const t = node.data("type");
+          if (state.view === "overview" && t === "file") {
+            showObject(node.id());
+            return;
+          }
           showDetails(node.id());
         });
 
@@ -1152,12 +1224,34 @@
         const localFiles = [...files];
         state.files = localFiles;
         state.nodeData.clear();
+        state.rootByNodeId.clear();
+        state.objectIndex.clear();
 
         /** @type {any[]} */
         const elements = [];
 
-        /** @type {{nodeId: string, text: string}[]} */
+        /** @type {{nodeId: string, text: string, rootFileId: string}[]} */
         const mentionCandidates = [];
+
+        function ensureObject(fileNodeId, fileLabel, path, ext, size) {
+          if (state.objectIndex.has(fileNodeId)) return;
+          state.objectIndex.set(fileNodeId, {
+            id: fileNodeId,
+            label: fileLabel,
+            path,
+            ext,
+            size,
+            counts: { section: 0, chunk: 0, row: 0, image: 0, pdf: 0, pdf_page: 0, note: 0 },
+            entityCounts: new Map(),
+          });
+        }
+
+        function indexNodeToFile(rootFileId, nodeId, type) {
+          state.rootByNodeId.set(nodeId, rootFileId);
+          const obj = state.objectIndex.get(rootFileId);
+          if (!obj) return;
+          if (obj.counts[type] != null) obj.counts[type] += 1;
+        }
 
         const addNode = (node) => {
           elements.push(node);
@@ -1186,6 +1280,7 @@
 
           addNode(makeNode(fileNodeId, "file", fileLabel, { path, ext, size: file.size }));
           remember(fileNodeId, { id: fileNodeId, type: "file", label: fileLabel, path, ext, size: file.size });
+          ensureObject(fileNodeId, fileLabel, path, ext, file.size);
 
           if (isImageExt(ext)) {
             const objectUrl = URL.createObjectURL(file);
@@ -1201,6 +1296,7 @@
               size: file.size,
               objectUrl,
             });
+            indexNodeToFile(fileNodeId, imgId, "image");
             continue;
           }
 
@@ -1211,6 +1307,7 @@
             addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + pdfId)}`, fileNodeId, pdfId, "contains"));
             const pdfMeta = { id: pdfId, type: "pdf", label: fileLabel, path, ext, size: file.size, objectUrl };
             remember(pdfId, pdfMeta);
+            indexNodeToFile(fileNodeId, pdfId, "pdf");
 
             // create per-page nodes (cheap: only reads structure)
             try {
@@ -1223,18 +1320,21 @@
                 addNode(makeNode(pageId, "pdf_page", `p${p}`, { page: p }));
                 addEdge(makeEdge(`e:${hashString(pdfId + "->" + pageId)}`, pdfId, pageId, "contains"));
                 remember(pageId, { id: pageId, type: "pdf_page", label: `Page ${p}`, page: p, pdf: pdfMeta });
+                indexNodeToFile(fileNodeId, pageId, "pdf_page");
               }
               if (pageCount > maxPages) {
                 const noteId = `note:${fhash}:pages`;
                 addNode(makeNode(noteId, "note", `…${pageCount - maxPages} pages`, {}));
                 addEdge(makeEdge(`e:${hashString(pdfId + "->" + noteId)}`, pdfId, noteId, "contains"));
                 remember(noteId, { id: noteId, type: "note", label: "Pages capped", text: `PDF có ${pageCount} pages; UI giới hạn hiển thị ${maxPages} pages để giữ nhẹ.` });
+                indexNodeToFile(fileNodeId, noteId, "note");
               }
             } catch (e) {
               const noteId = `note:${fhash}:pdferr`;
               addNode(makeNode(noteId, "note", "pdf parse error", {}));
               addEdge(makeEdge(`e:${hashString(pdfId + "->" + noteId)}`, pdfId, noteId, "contains"));
               remember(noteId, { id: noteId, type: "note", label: "PDF parse error", text: String(e?.message || e) });
+              indexNodeToFile(fileNodeId, noteId, "note");
             }
             continue;
           }
@@ -1249,6 +1349,7 @@
               label: "Unsupported file type",
               text: `File type ".${ext || "?"}" chưa được parse để chunk.`,
             });
+            indexNodeToFile(fileNodeId, noteId, "note");
             continue;
           }
 
@@ -1260,6 +1361,7 @@
             addNode(makeNode(noteId, "note", "read error", {}));
             addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + noteId)}`, fileNodeId, noteId, "contains"));
             remember(noteId, { id: noteId, type: "note", label: "Read error", text: String(e?.message || e) });
+            indexNodeToFile(fileNodeId, noteId, "note");
             continue;
           }
 
@@ -1281,13 +1383,15 @@
               addNode(makeNode(rowId, "row", label, { rowIndex: i + 1 }));
               addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + rowId)}`, fileNodeId, rowId, "contains"));
               remember(rowId, { id: rowId, type: "row", label, path, ext, size: file.size, text });
-              if (text) mentionCandidates.push({ nodeId: rowId, text });
+              indexNodeToFile(fileNodeId, rowId, "row");
+              if (text) mentionCandidates.push({ nodeId: rowId, text, rootFileId: fileNodeId });
             }
             if (rows.length > maxRows) {
               const noteId = `note:${fhash}:rowcap`;
               addNode(makeNode(noteId, "note", `…${rows.length - maxRows} rows`, {}));
               addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + noteId)}`, fileNodeId, noteId, "contains"));
               remember(noteId, { id: noteId, type: "note", label: "Rows capped", text: `CSV có ${rows.length} rows; UI giới hạn parse ${maxRows} rows.` });
+              indexNodeToFile(fileNodeId, noteId, "note");
             }
             continue;
           }
@@ -1304,7 +1408,8 @@
               addNode(makeNode(chunkId, "chunk", label, {}));
               addEdge(makeEdge(`e:${hashString(fileNodeId + "->" + chunkId)}`, fileNodeId, chunkId, "contains"));
               remember(chunkId, { id: chunkId, type: "chunk", label, path, ext, size: file.size, text: chunk });
-              mentionCandidates.push({ nodeId: chunkId, text: chunk });
+              indexNodeToFile(fileNodeId, chunkId, "chunk");
+              mentionCandidates.push({ nodeId: chunkId, text: chunk, rootFileId: fileNodeId });
             }
             continue;
           }
@@ -1329,6 +1434,7 @@
                 text: (s.body || "").trim(),
                 sectionTitle: secLabel,
               });
+              indexNodeToFile(fileNodeId, secId, "section");
 
               const chunks = chunkTextLoose(s.body || "");
               const maxChunks = Math.min(chunks.length, 900);
@@ -1340,7 +1446,8 @@
                 addNode(makeNode(chunkId, "chunk", label, {}));
                 addEdge(makeEdge(`e:${hashString(secId + "->" + chunkId)}`, secId, chunkId, "contains"));
                 remember(chunkId, { id: chunkId, type: "chunk", label, path, ext, size: file.size, text: chunk, sectionTitle: secLabel });
-                mentionCandidates.push({ nodeId: chunkId, text: chunk });
+                indexNodeToFile(fileNodeId, chunkId, "chunk");
+                mentionCandidates.push({ nodeId: chunkId, text: chunk, rootFileId: fileNodeId });
               }
             }
             continue;
@@ -1384,12 +1491,146 @@
           for (const [t, count] of top) {
             const entId = `ent:${t}`;
             addEdge(makeEdge(`m:${hashString(c.nodeId + "->" + entId)}`, c.nodeId, entId, "mentions", { count }));
+            const obj = state.objectIndex.get(c.rootFileId);
+            if (obj) obj.entityCounts.set(t, (obj.entityCounts.get(t) || 0) + 1);
           }
         }
 
-        buildCy(elements);
+        state.fullElements = elements;
+        state.overviewElements = buildOverviewElements();
+        state.view = "overview";
+        state.currentObjectId = null;
+        el("btnBack").style.display = "none";
+        buildCy(state.overviewElements);
+        state.typeFilter = "all";
+        applyFilter();
+        setFiltersUI();
+        renderObjectList();
+        setStats();
+      }
+
+      function buildOverviewElements() {
+        /** @type {any[]} */
+        const out = [];
+
+        const objects = [...state.objectIndex.values()];
+        const entitySets = new Map(); // fileId -> Set(entity)
+
+        for (const o of objects) {
+          const totalDots =
+            o.counts.section +
+            o.counts.chunk +
+            o.counts.row +
+            o.counts.image +
+            o.counts.pdf +
+            o.counts.pdf_page +
+            o.counts.note;
+
+          out.push(makeNode(o.id, "file", o.label, { path: o.path, ext: o.ext, size: o.size, size: clamp(totalDots, 0, 400) }));
+          const set = new Set([...o.entityCounts.keys()]);
+          entitySets.set(o.id, set);
+          // keep nodeData as-is (already saved in remember for file)
+        }
+
+        // file-to-file similarity edges (shared entities)
+        const ids = objects.map((o) => o.id);
+        for (let i = 0; i < ids.length; i++) {
+          for (let j = i + 1; j < ids.length; j++) {
+            const a = entitySets.get(ids[i]) || new Set();
+            const b = entitySets.get(ids[j]) || new Set();
+            if (!a.size || !b.size) continue;
+            let shared = 0;
+            for (const x of a) {
+              if (b.has(x)) shared += 1;
+            }
+            if (shared < 3) continue;
+            out.push(makeEdge(`sim:${hashString(ids[i] + "->" + ids[j])}`, ids[i], ids[j], "sim", { shared }));
+          }
+        }
+
+        return out;
+      }
+
+      function renderObjectList() {
+        const objects = [...state.objectIndex.values()].sort((a, b) => (b.size || 0) - (a.size || 0));
+        objectList.innerHTML = "";
+        for (const o of objects) {
+          const totalDots =
+            o.counts.section +
+            o.counts.chunk +
+            o.counts.row +
+            o.counts.image +
+            o.counts.pdf +
+            o.counts.pdf_page +
+            o.counts.note;
+
+          const item = document.createElement("div");
+          item.className = "list-item";
+          item.innerHTML = `
+            <div class="title">${escapeText(o.label)}</div>
+            <div class="meta">
+              <span class="badge">dots ${totalDots}</span>
+              ${o.counts.chunk ? `<span class="badge">chunks ${o.counts.chunk}</span>` : ""}
+              ${o.counts.section ? `<span class="badge">sections ${o.counts.section}</span>` : ""}
+              ${o.counts.row ? `<span class="badge">rows ${o.counts.row}</span>` : ""}
+              ${o.counts.image ? `<span class="badge">images ${o.counts.image}</span>` : ""}
+              ${o.counts.pdf ? `<span class="badge">pdf ${o.counts.pdf}</span>` : ""}
+            </div>
+            <div class="small mono">${escapeText(o.path)}</div>
+          `;
+          item.addEventListener("click", () => showObject(o.id));
+          objectList.appendChild(item);
+        }
+      }
+
+      function showObject(fileNodeId) {
+        if (!state.fullElements.length) return;
+        state.view = "object";
+        state.currentObjectId = fileNodeId;
+        el("btnBack").style.display = "inline-flex";
+
+        const keep = new Set([fileNodeId]);
+        for (const [nodeId, root] of state.rootByNodeId.entries()) {
+          if (root === fileNodeId) keep.add(nodeId);
+        }
+
+        // add entities connected to kept nodes
+        for (const e of state.fullElements) {
+          if (!e?.data) continue;
+          if (!e.data.source) continue;
+          if (e.data.rel !== "mentions") continue;
+          if (keep.has(e.data.source)) keep.add(e.data.target);
+        }
+
+        /** @type {any[]} */
+        const sub = [];
+        for (const e of state.fullElements) {
+          if (!e?.data) continue;
+          if (e.data.source) {
+            if (keep.has(e.data.source) && keep.has(e.data.target)) sub.push(e);
+            continue;
+          }
+          if (keep.has(e.data.id)) {
+            // give nodes a reasonable size hint
+            const d = state.nodeData.get(e.data.id);
+            const size = d?.type === "file" ? 50 : d?.type === "entity" ? 12 : 14;
+            sub.push({ data: { ...e.data, size } });
+          }
+        }
+
+        buildCy(sub);
+        state.typeFilter = "all";
+        setFiltersUI();
         applyFilter();
         setStats();
+
+        const n = state.cy.getElementById(fileNodeId);
+        if (n && !n.empty()) {
+          state.cy.$("node").unselect();
+          n.select();
+          state.cy.center(n);
+          showDetails(fileNodeId);
+        }
       }
 
       function clearAll() {
@@ -1397,6 +1638,14 @@
         state.nodeData.clear();
         if (state.cy) state.cy.destroy();
         state.cy = null;
+        state.view = "overview";
+        state.currentObjectId = null;
+        state.fullElements = [];
+        state.overviewElements = [];
+        state.rootByNodeId.clear();
+        state.objectIndex.clear();
+        objectList.innerHTML = "";
+        el("btnBack").style.display = "none";
         setStats();
       }
 
@@ -1423,6 +1672,17 @@
       el("btnRefresh").addEventListener("click", async () => {
         if (!state.files.length) return;
         await processFilesAndBuildGraph(state.files);
+      });
+      el("btnBack").addEventListener("click", () => {
+        if (!state.overviewElements.length) return;
+        state.view = "overview";
+        state.currentObjectId = null;
+        el("btnBack").style.display = "none";
+        buildCy(state.overviewElements);
+        state.typeFilter = "all";
+        setFiltersUI();
+        applyFilter();
+        setStats();
       });
       el("btnRelayout").addEventListener("click", () => relayout());
       el("btnClear").addEventListener("click", () => clearAll());
