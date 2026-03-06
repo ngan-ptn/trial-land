@@ -256,7 +256,12 @@
         height: 100%;
         width: 100%;
         border-radius: 14px;
-        min-height: 520px;
+        min-height: 0;
+      }
+
+      #graphBody {
+        padding: 0;
+        overflow: hidden;
       }
 
       .statline {
@@ -471,7 +476,7 @@
           <h2>Graph</h2>
           <div class="statline" id="statsMid"></div>
         </div>
-        <div class="body" style="padding: 0">
+        <div class="body" id="graphBody">
           <div id="graph"></div>
         </div>
       </div>
@@ -1965,4 +1970,3 @@
     </script>
   </body>
 </html>
-
