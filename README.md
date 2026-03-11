@@ -16,31 +16,16 @@ Each version is a fully independent application with:
 
 ```
 docliQ-land/
-├── README.md
-├── fixtures/         # Shared fixture data for all versions
-│   ├── user.json
-│   ├── doctor.json
-│   ├── appointment.json
-│   └── ...
-├── guidelines/       # Shared guidelines for all versions
-│   ├── visual/       # Visual design guidelines, style guides
-│   └── compliance/   # GDPR, accessibility, regulatory docs
+├── artifacts/        # Generated design artifacts (OOUX maps, IA maps, etc.)
+├── common-language/  # Shared terminology & implementation patterns
+├── docs/             # Project documentation, plans, changelogs
+├── fixtures/         # Shared fixture data (JSON) for all versions
+├── guidelines/       # Design system, copy, testing, deployment guides
 ├── knowledge/        # Iterative knowledge accumulation
-│   ├── HOW-KNOWLEDGE-WORKS.md
-│   ├── decision-log.md
-│   ├── pattern-library.md
-│   ├── knowledge-log.md
-│   ├── lessons-learned.md
-│   └── sum-changed.md
-├── workflows/        # Design workflow templates
-│   ├── ooux-dot-map.md
-│   ├── info-map.md
-│   ├── user-flows.md
-│   └── ...
+├── scripts/          # Knowledge automation scripts
+├── workflows/        # Design workflow templates (brainstorming, flows, ethics)
 └── versions/
-    ├── v1/           # First version
-    ├── v2/           # Second version (when created)
-    └── ...
+    └── v1/           # Current active version
 ```
 
 ## Running a Version
@@ -52,9 +37,6 @@ cd versions/v1
 # Install dependencies
 bun install
 
-# Start local database (optional)
-bun run db:local
-
 # Start development servers
 bun run dev
 ```
@@ -63,38 +45,16 @@ The app will be available at:
 - Frontend: http://localhost:3001
 - Backend API: http://localhost:3000
 
-## Creating a New Version
-
-To create a new version, run from the `versions/` directory:
-
-```bash
-cd versions
-
-bunx create-better-t-stack@latest v2 \
-  --frontend tanstack-router \
-  --backend hono \
-  --database sqlite \
-  --orm drizzle \
-  --auth none \
-  --package-manager bun \
-  --runtime bun \
-  --api trpc \
-  --addons none \
-  --examples none \
-  --db-setup none \
-  --web-deploy none \
-  --server-deploy none \
-  --no-git \
-  --no-install
-```
-
-**Note:** After scaffolding, you may need to downgrade Tailwind to v3 if the CLI installs v4 by default. See the v1 setup for reference.
-
 ## Database Commands
+
+Run from within a version folder (e.g., `versions/v1`):
 
 ```bash
 # Apply schema changes
 bun run db:push
+
+# Seed the database
+bun run db:seed
 
 # Open database UI
 bun run db:studio
@@ -115,16 +75,17 @@ bun run knowledge:weekly
 bun run knowledge:after
 ```
 
-Or run scripts directly:
-```bash
-./scripts/knowledge-during.sh
-./scripts/knowledge-weekly.sh
-./scripts/knowledge-after-iteration.sh
-```
+## Shared Resources
+
+- **Fixtures** (`fixtures/`): JSON test data shared across all versions (users, doctors, appointments, etc.)
+- **Guidelines** (`guidelines/`): Visual design system, copy guidelines, decision trees, deployment & testing guides
+- **Common Language** (`common-language/`): Shared terminology, state machines, and implementation patterns
+- **Workflows** (`workflows/`): Design process templates (brainstorming, hypothesis formation, solution tradeoffs, ethics gates)
+- **Knowledge** (`knowledge/`): Cross-version learnings, decision log, pattern library, lessons learned
 
 ## Versioning Philosophy
 
-Each version is **fully independent** - no shared code between versions (except fixture data). This allows:
+Each version is **fully independent** - no shared code between versions. This allows:
 
 - Clean experimentation without breaking existing versions
 - Easy comparison between different implementations
