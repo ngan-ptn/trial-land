@@ -70,6 +70,22 @@ npm run dev
 python3 -m http.server 8000
 ```
 
+### 1.1.1 Screenshot Location In This Repo
+
+For this repository, save `agent-browser` screenshots in the repo-level folder:
+
+```bash
+agent-browser/
+```
+
+Use explicit screenshot paths such as:
+
+```bash
+agent-browser screenshot /Users/nganpham/Documents/trial-land/agent-browser/flow-check.png
+```
+
+Avoid saving verification screenshots to `/tmp` when working in this repo.
+
 ### 1.2 Install Dev Browser
 
 ```bash

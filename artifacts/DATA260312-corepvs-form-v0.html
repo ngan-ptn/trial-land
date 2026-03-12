@@ -1,0 +1,1053 @@
+<!doctype html>
+<html lang="en" class="brand-corepvs-purchase-order">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CorePVS Purchase Order Modal Mock</title>
+    <link rel="stylesheet" href="./DATA260312-corepvs-brand-primitives.css" />
+    <style>
+      :root {
+        /* Semantic shadcn-style aliases. */
+        --background: var(--stone-25);
+        --foreground: var(--stone-900);
+        --card: var(--stone-0);
+        --card-foreground: var(--stone-900);
+        --popover: var(--stone-0);
+        --popover-foreground: var(--stone-900);
+        --primary: var(--orange-500);
+        --primary-foreground: var(--stone-0);
+        --secondary: var(--stone-50);
+        --secondary-foreground: var(--stone-600);
+        --muted: var(--stone-50);
+        --muted-foreground: var(--stone-400);
+        --accent: var(--blue-100);
+        --accent-foreground: var(--blue-500);
+        --success: var(--emerald-500);
+        --success-soft: var(--emerald-100);
+        --destructive: var(--rose-500);
+        --border: var(--stone-100);
+        --input: var(--stone-100);
+        --ring: var(--blue-500);
+        --radius: 26px;
+        --shadow-xl: 0 34px 80px color-mix(in oklab, var(--shadow-color) 22%, transparent);
+        --shadow-md: 0 16px 38px color-mix(in oklab, var(--shadow-color) 8%, transparent);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter Variable, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background:
+          radial-gradient(circle at top left, color-mix(in oklab, var(--blue-500) 12%, transparent), transparent 28%),
+          linear-gradient(180deg, var(--stone-75), var(--background));
+        color: var(--foreground);
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      .viewport {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 14px;
+      }
+
+      .backdrop {
+        position: relative;
+        width: min(1240px, 100%);
+        min-height: 706px;
+        border-radius: 28px;
+        overflow: hidden;
+        background:
+          linear-gradient(180deg, color-mix(in oklab, var(--stone-900) 6%, transparent), color-mix(in oklab, var(--stone-900) 4%, transparent)),
+          var(--stone-0);
+        border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+        box-shadow: var(--shadow-xl);
+      }
+
+      .backdrop::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: color-mix(in oklab, var(--stone-900) 8%, transparent);
+        backdrop-filter: blur(3px);
+      }
+
+      .background-app {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, color-mix(in oklab, var(--stone-50) 92%, transparent), color-mix(in oklab, var(--stone-25) 82%, transparent)),
+          var(--stone-0);
+        filter: blur(0.8px);
+      }
+
+      .background-app::before,
+      .background-app::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.84;
+      }
+
+      .background-app::before {
+        background:
+          linear-gradient(180deg, transparent 0 92px, color-mix(in oklab, var(--stone-900) 5%, transparent) 92px 94px, transparent 94px),
+          linear-gradient(90deg, transparent 0 248px, color-mix(in oklab, var(--stone-900) 4%, transparent) 248px 249px, transparent 249px);
+      }
+
+      .background-content {
+        position: absolute;
+        inset: 0;
+        padding: 26px 28px;
+        color: color-mix(in oklab, var(--foreground) 48%, transparent);
+        z-index: 0;
+      }
+
+      .ghost-title {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 1.95rem;
+        font-weight: 800;
+        letter-spacing: -0.06em;
+        margin-bottom: 20px;
+      }
+
+      .ghost-card {
+        width: 244px;
+        padding: 16px;
+        border-radius: 18px;
+        background: color-mix(in oklab, var(--stone-0) 72%, transparent);
+        border: 1px solid color-mix(in oklab, var(--border) 90%, transparent);
+        box-shadow: var(--shadow-md);
+      }
+
+      .ghost-row,
+      .ghost-line,
+      .ghost-chip,
+      .ghost-bar {
+        background: linear-gradient(90deg, color-mix(in oklab, var(--stone-100) 92%, transparent), color-mix(in oklab, var(--stone-50) 100%, transparent), color-mix(in oklab, var(--stone-100) 92%, transparent));
+        background-size: 200% 100%;
+        animation: shimmer 3.2s linear infinite;
+      }
+
+      .ghost-row {
+        height: 16px;
+        border-radius: 999px;
+        margin-bottom: 12px;
+      }
+
+      .ghost-line {
+        height: 11px;
+        border-radius: 999px;
+        margin-top: 9px;
+      }
+
+      .ghost-chip {
+        width: 88px;
+        height: 30px;
+        border-radius: 999px;
+      }
+
+      .ghost-bar {
+        height: 8px;
+        border-radius: 999px;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      .modal {
+        position: absolute;
+        inset: 26px 26px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.62fr) minmax(312px, 0.84fr);
+        border-radius: 24px;
+        overflow: hidden;
+        background: var(--card);
+        border: 1px solid color-mix(in oklab, var(--border) 95%, transparent);
+        box-shadow: 0 24px 54px color-mix(in oklab, var(--shadow-color) 12%, transparent);
+        z-index: 1;
+      }
+
+      .modal-main,
+      .modal-side {
+        padding: 18px 18px 14px;
+      }
+
+      .modal-side {
+        background: linear-gradient(180deg, color-mix(in oklab, var(--stone-25) 96%, transparent), color-mix(in oklab, var(--stone-50) 88%, transparent));
+        border-left: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+        position: relative;
+      }
+
+      .header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 10px;
+      }
+
+      .header-main {
+        display: flex;
+        gap: 12px;
+      }
+
+      .header-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        color: var(--success);
+        background: linear-gradient(145deg, color-mix(in oklab, var(--success-soft) 90%, transparent), color-mix(in oklab, var(--stone-0) 90%, transparent));
+        border: 1px solid color-mix(in oklab, var(--border) 90%, transparent);
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+        letter-spacing: -0.06em;
+      }
+
+      .subhead {
+        margin-top: 4px;
+        color: var(--muted-foreground);
+        line-height: 1.3;
+        max-width: 480px;
+        font-size: 0.86rem;
+      }
+
+      .ghost-close,
+      .icon-btn {
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        border: 1px solid color-mix(in oklab, var(--input) 100%, transparent);
+        background: var(--card);
+        color: var(--muted-foreground);
+        cursor: pointer;
+        transition: transform 140ms ease, border-color 160ms ease, background 160ms ease;
+      }
+
+      .ghost-close:hover,
+      .icon-btn:hover,
+      .ghost-close:focus-visible,
+      .icon-btn:focus-visible {
+        outline: none;
+        transform: translateY(-1px);
+        border-color: color-mix(in oklab, var(--primary) 30%, transparent);
+        background: var(--accent);
+      }
+
+      .stepper {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .step {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 6px;
+        color: var(--muted-foreground);
+        font-size: 0.82rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .step::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 2px;
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--border) 92%, transparent);
+      }
+
+      .step-index {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--secondary);
+        color: var(--muted-foreground);
+        font-size: 0.78rem;
+      }
+
+      .step.is-active,
+      .step.is-complete {
+        color: var(--foreground);
+      }
+
+      .step.is-active::after {
+        background: var(--primary);
+      }
+
+      .step.is-complete::after {
+        background: var(--success);
+      }
+
+      .step.is-active .step-index {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+
+      .step.is-complete .step-index {
+        background: var(--success-soft);
+        color: var(--success);
+      }
+
+      .section-title {
+        margin-bottom: 8px;
+        font-size: 0.98rem;
+        letter-spacing: -0.04em;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .field-block {
+        margin-bottom: 10px;
+      }
+
+      .field-label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--secondary-foreground);
+      }
+
+      .field,
+      .text-area {
+        width: 100%;
+        border: 1px solid color-mix(in oklab, var(--input) 100%, transparent);
+        background: var(--card);
+        color: var(--foreground);
+        border-radius: 14px;
+        padding: 9px 10px;
+        outline: none;
+        transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      }
+
+      .field:focus,
+      .text-area:focus {
+        border-color: color-mix(in oklab, var(--ring) 78%, transparent);
+        box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 18%, transparent);
+      }
+
+      .field.fake-select {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        cursor: pointer;
+      }
+
+      .field-value-muted {
+        color: var(--muted-foreground);
+      }
+
+      .text-area {
+        min-height: 72px;
+        resize: vertical;
+        line-height: 1.28;
+      }
+
+      .inline-action {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+
+      .link-btn {
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .choice-card {
+        padding: 10px;
+        border-radius: 14px;
+        border: 1px solid color-mix(in oklab, var(--border) 94%, transparent);
+        background: linear-gradient(180deg, color-mix(in oklab, var(--stone-0) 99%, transparent), color-mix(in oklab, var(--secondary) 90%, transparent));
+        cursor: pointer;
+        transition: transform 140ms ease, border-color 160ms ease, box-shadow 160ms ease;
+      }
+
+      .choice-card:hover,
+      .choice-card:focus-visible,
+      .choice-card.is-selected {
+        outline: none;
+        transform: translateY(-1px);
+        border-color: color-mix(in oklab, var(--stone-900) 22%, transparent);
+        box-shadow: var(--shadow-md);
+      }
+
+      .choice-card.is-selected {
+        background: linear-gradient(180deg, color-mix(in oklab, var(--stone-0) 99%, transparent), color-mix(in oklab, var(--stone-50) 94%, transparent));
+        border-color: color-mix(in oklab, var(--stone-900) 32%, transparent);
+      }
+
+      .choice-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .choice-icon,
+      .avatar {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+      }
+
+      .choice-icon {
+        display: grid;
+        place-items: center;
+        background: var(--secondary);
+        color: var(--secondary-foreground);
+      }
+
+      .avatar {
+        background: linear-gradient(145deg, color-mix(in oklab, var(--blue-500) 80%, transparent), color-mix(in oklab, var(--emerald-500) 72%, transparent));
+      }
+
+      .choice-card h4 {
+        font-size: 0.88rem;
+        letter-spacing: -0.02em;
+      }
+
+      .choice-card p,
+      .side-section p,
+      .meta-row,
+      .empty-note {
+        color: var(--muted-foreground);
+        line-height: 1.28;
+        font-size: 0.74rem;
+      }
+
+      .shipment-grid {
+        margin-top: 8px;
+      }
+
+      .note-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        color: var(--accent-foreground);
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .btn-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 38px;
+        padding: 0 14px;
+        border-radius: 12px;
+        border: 1px solid color-mix(in oklab, var(--input) 100%, transparent);
+        background: var(--card);
+        color: var(--foreground);
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 140ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+      }
+
+      .btn:hover,
+      .btn:focus-visible {
+        outline: none;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: var(--primary-foreground);
+        border-color: color-mix(in oklab, var(--primary) 40%, transparent);
+      }
+
+      .btn-ghost {
+        background: transparent;
+      }
+
+      .side-stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .side-section + .side-section {
+        padding-top: 10px;
+        border-top: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+      }
+
+      .side-section h3 {
+        margin-bottom: 12px;
+        font-size: 1.02rem;
+        letter-spacing: -0.04em;
+      }
+
+      .info-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .info-item strong,
+      .meta-row strong {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.82rem;
+        color: var(--secondary-foreground);
+      }
+
+      .assignee {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+      }
+
+      .empty-product {
+        min-height: 86px;
+        display: grid;
+        place-items: center;
+        border-radius: 18px;
+        border: 1px dashed color-mix(in oklab, var(--border) 100%, transparent);
+        background: linear-gradient(180deg, color-mix(in oklab, var(--stone-0) 96%, transparent), color-mix(in oklab, var(--secondary) 82%, transparent));
+        text-align: center;
+        padding: 16px;
+      }
+
+      .empty-product svg {
+        margin-bottom: 10px;
+        color: var(--muted-foreground);
+      }
+
+      .summary-card {
+        padding: 12px;
+        border-radius: 18px;
+        background: var(--card);
+        border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+      }
+
+      .summary-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .summary-rows {
+        display: grid;
+        gap: 10px;
+      }
+
+      .summary-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted-foreground);
+      }
+
+      .summary-row.total {
+        padding-top: 12px;
+        border-top: 1px solid color-mix(in oklab, var(--border) 92%, transparent);
+        color: var(--foreground);
+        font-weight: 800;
+      }
+
+      .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        background: var(--success-soft);
+        color: var(--success);
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      .toast {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: color-mix(in oklab, var(--stone-900) 92%, transparent);
+        color: var(--stone-0);
+        box-shadow: var(--shadow-xl);
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+
+      .toast.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 1100px) {
+        .modal {
+          inset: 18px;
+          grid-template-columns: 1fr;
+        }
+
+        .modal-side {
+          border-left: 0;
+          border-top: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+        }
+      }
+
+      @media (max-width: 720px) {
+        .viewport {
+          padding: 10px;
+        }
+
+        .backdrop {
+          min-height: auto;
+        }
+
+        .modal {
+          position: relative;
+          inset: auto;
+        }
+
+        .grid-2,
+        .cards,
+        .stepper {
+          grid-template-columns: 1fr;
+        }
+
+        .background-content {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="viewport">
+      <div class="backdrop">
+        <div class="background-app"></div>
+        <div class="background-content" aria-hidden="true">
+          <div class="ghost-title">
+            <span style="width: 26px; height: 26px; border-radius: 50%; background: color-mix(in oklab, var(--success) 18%, transparent);"></span>
+            Urban Deals
+          </div>
+          <div style="display: flex; gap: 18px;">
+            <div class="ghost-card">
+              <div class="ghost-row" style="width: 74%;"></div>
+              <div class="ghost-line" style="width: 92%;"></div>
+              <div class="ghost-line" style="width: 65%;"></div>
+              <div style="display: flex; gap: 8px; margin: 20px 0 18px;">
+                <div class="ghost-chip"></div>
+                <div class="ghost-chip" style="width: 104px;"></div>
+              </div>
+              <div class="ghost-bar"></div>
+              <div class="ghost-bar" style="margin-top: 18px; width: 82%;"></div>
+              <div class="ghost-bar" style="margin-top: 18px; width: 66%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="po-title">
+          <section class="modal-main">
+            <div class="header">
+              <div class="header-main">
+                <div class="header-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="5" y="4" width="14" height="16" rx="3" />
+                    <path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4" />
+                    <circle cx="18" cy="18" r="4" fill="var(--success)" stroke="var(--stone-0)"></circle>
+                    <path d="m16.8 18 1 1 2-2.2" stroke="var(--stone-0)"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h1 id="po-title">Create Purchase Order</h1>
+                  <p class="subhead">Effortlessly import products and update your inventory with a token-driven, white-label friendly modal shell.</p>
+                </div>
+              </div>
+              <button class="ghost-close" type="button" id="closeBtn" aria-label="Close">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M6 6 18 18M18 6 6 18" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="stepper" id="stepper">
+              <button class="step is-active" type="button" data-step="0">
+                <span class="step-index">1</span>
+                Details Shipment
+              </button>
+              <button class="step" type="button" data-step="1">
+                <span class="step-index">2</span>
+                Product Details
+              </button>
+              <button class="step" type="button" data-step="2">
+                <span class="step-index">3</span>
+                Recipient Email
+              </button>
+            </div>
+
+            <section>
+              <h2 class="section-title" id="sectionHeading">Shipment Information</h2>
+
+              <div class="grid-2">
+                <div class="field-block">
+                  <label class="field-label" for="deliveryDate">Expected delivery date</label>
+                  <div class="field fake-select" tabindex="0">
+                    <span id="deliveryDate">24/08/2024</span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="field-block">
+                  <label class="field-label" for="assignTo">Assign to</label>
+                  <div class="field fake-select" tabindex="0">
+                    <span id="assignTo">Raihan Fikri</span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field-block">
+                <label class="field-label" for="paymentTerms">Payment terms</label>
+                <div class="field fake-select" tabindex="0">
+                  <span id="paymentTerms">Cash</span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </div>
+              </div>
+
+              <div class="field-block">
+                <label class="field-label" for="noteInput">Note</label>
+                <textarea class="text-area" id="noteInput">Please review all items, quantities, and specifications listed in this purchase order. If there are any discrepancies or issues, contact us immediately before processing the order.</textarea>
+              </div>
+
+              <div class="inline-action">
+                <h2 class="section-title" style="margin-bottom: 0;">Address</h2>
+                <button class="link-btn" type="button" id="addAddressBtn">+ Add Address</button>
+              </div>
+
+              <div class="cards" id="addressCards">
+                <article class="choice-card is-selected" tabindex="0" data-address="Central Warehouse, 123 Maple Street, Apt 4B, Springfield, IL 62704">
+                  <div class="choice-head">
+                    <div class="choice-icon">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9">
+                        <path d="M12 21s6-5.5 6-10a6 6 0 0 0-12 0c0 4.5 6 10 6 10Z" />
+                        <circle cx="12" cy="11" r="2.5" />
+                      </svg>
+                    </div>
+                    <h4>Central Warehouse</h4>
+                  </div>
+                  <p>123 Maple Street, Apt 4B, Springfield, IL 62704</p>
+                </article>
+                <article class="choice-card" tabindex="0" data-address="European Warehouse, 654 Logistics Ln, Hamburg 20457, Germany">
+                  <div class="choice-head">
+                    <div class="choice-icon">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9">
+                        <path d="M12 21s6-5.5 6-10a6 6 0 0 0-12 0c0 4.5 6 10 6 10Z" />
+                        <circle cx="12" cy="11" r="2.5" />
+                      </svg>
+                    </div>
+                    <h4>European Warehouse</h4>
+                  </div>
+                  <p>654 Logistics Ln, Hamburg 20457, Germany</p>
+                </article>
+                <article class="choice-card" tabindex="0" data-address="Northern Warehouse, 321 Commerce St, Toronto, ON M5J 2N8">
+                  <div class="choice-head">
+                    <div class="choice-icon">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9">
+                        <path d="M12 21s6-5.5 6-10a6 6 0 0 0-12 0c0 4.5 6 10 6 10Z" />
+                        <circle cx="12" cy="11" r="2.5" />
+                      </svg>
+                    </div>
+                    <h4>Northern Warehouse</h4>
+                  </div>
+                  <p>321 Commerce St, Toronto, ON M5J 2N8</p>
+                </article>
+              </div>
+
+              <div class="shipment-grid">
+                <h2 class="section-title">Shipment</h2>
+                <div class="cards" id="shipmentCards">
+                  <article class="choice-card is-selected" tabindex="0" data-shipment="Fedex">
+                    <div class="choice-head">
+                      <div class="choice-icon" style="background: var(--orange-100); color: var(--primary);">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9">
+                          <path d="M3 7h12l4 5v5H3z" />
+                          <path d="M15 7v5h4" />
+                          <circle cx="7.5" cy="17.5" r="1.8" />
+                          <circle cx="16.5" cy="17.5" r="1.8" />
+                        </svg>
+                      </div>
+                      <h4>Fedex</h4>
+                    </div>
+                    <p>Priority shipping for domestic delivery.</p>
+                  </article>
+                  <article class="choice-card" tabindex="0" data-shipment="US Postal Service">
+                    <div class="choice-head">
+                      <div class="choice-icon">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9">
+                          <rect x="3.5" y="5" width="17" height="14" rx="3" />
+                          <path d="m5 8 7 5 7-5" />
+                        </svg>
+                      </div>
+                      <h4>US Postal Service</h4>
+                    </div>
+                    <p>Economy option with full tracking coverage.</p>
+                  </article>
+                </div>
+                <a class="note-link" href="#" onclick="return false;">Learn more about Purchase Order</a>
+              </div>
+
+              <div class="footer">
+                <span class="status-chip"><span class="dot"></span>Draft saved</span>
+                <div class="btn-row">
+                  <button class="btn btn-ghost" type="button" id="cancelBtn">Cancel</button>
+                  <button class="btn btn-primary" type="button" id="nextBtn">Next</button>
+                </div>
+              </div>
+            </section>
+          </section>
+
+          <aside class="modal-side">
+            <div class="side-stack">
+              <section class="side-section">
+                <h3>Other Information</h3>
+                <div class="info-list">
+                  <div class="info-item">
+                    <strong>Delivery date</strong>
+                    <div>24/08/2024</div>
+                  </div>
+                  <div class="info-item">
+                    <strong>Assign to</strong>
+                    <div class="assignee"><span class="avatar"></span>Raihan Fikri</div>
+                  </div>
+                  <div class="info-item">
+                    <strong>Payment terms</strong>
+                    <div>COD (Cash on Delivery)</div>
+                  </div>
+                  <div class="info-item">
+                    <strong>Address</strong>
+                    <div id="selectedAddress">123 Maple Street, Apt 4B, Springfield, IL 62704</div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="side-section">
+                <h3>Note</h3>
+                <p id="notePreview">Specifications listed in this purchase order. If there are any discrepancies or issues, contact us immediately before processing the order.</p>
+              </section>
+
+              <section class="side-section">
+                <h3>Products</h3>
+                <div class="empty-product">
+                  <div>
+                    <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6">
+                      <path d="M4 7.5 12 4l8 3.5v9L12 20l-8-3.5z" />
+                      <path d="M12 20v-9" />
+                      <path d="m4 7.5 8 3.5 8-3.5" />
+                    </svg>
+                    <div class="empty-note">The product list is empty for now</div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="side-section">
+                <div class="summary-card">
+                  <div class="summary-head">
+                    <h3 style="margin: 0;">Summary</h3>
+                    <div class="meta-row">Details</div>
+                  </div>
+                  <div class="summary-rows">
+                    <div class="summary-row"><span>Subtotal</span><strong>$422,000.50</strong></div>
+                    <div class="summary-row"><span>Total Qty</span><strong>2</strong></div>
+                    <div class="summary-row"><span>Tax</span><strong>10%</strong></div>
+                    <div class="summary-row total"><span>Total</span><strong>$422,548.50</strong></div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const stepButtons = document.querySelectorAll(".step");
+      const sectionHeading = document.getElementById("sectionHeading");
+      const nextBtn = document.getElementById("nextBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const closeBtn = document.getElementById("closeBtn");
+      const noteInput = document.getElementById("noteInput");
+      const notePreview = document.getElementById("notePreview");
+      const addressCards = document.querySelectorAll("#addressCards .choice-card");
+      const shipmentCards = document.querySelectorAll("#shipmentCards .choice-card");
+      const selectedAddress = document.getElementById("selectedAddress");
+      const addAddressBtn = document.getElementById("addAddressBtn");
+      const toast = document.getElementById("toast");
+
+      const stepLabels = ["Shipment Information", "Product Details", "Recipient Email"];
+      let currentStep = 0;
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        clearTimeout(showToast.timeoutId);
+        showToast.timeoutId = setTimeout(() => {
+          toast.classList.remove("is-visible");
+        }, 1800);
+      }
+
+      function renderSteps(index) {
+        stepButtons.forEach((step, stepIndex) => {
+          step.classList.toggle("is-active", stepIndex === index);
+          step.classList.toggle("is-complete", stepIndex < index);
+        });
+        sectionHeading.textContent = stepLabels[index];
+        nextBtn.textContent = index === stepLabels.length - 1 ? "Send" : "Next";
+      }
+
+      stepButtons.forEach((step) => {
+        step.addEventListener("click", () => {
+          currentStep = Number(step.dataset.step);
+          renderSteps(currentStep);
+        });
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (currentStep < stepLabels.length - 1) {
+          currentStep += 1;
+          renderSteps(currentStep);
+          showToast("Moved to the next step.");
+        } else {
+          showToast("Purchase order ready to review.");
+        }
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        currentStep = 0;
+        renderSteps(currentStep);
+        showToast("Draft reset to shipment details.");
+      });
+
+      closeBtn.addEventListener("click", () => {
+        showToast("Modal close is disabled in this mock.");
+      });
+
+      noteInput.addEventListener("input", () => {
+        notePreview.textContent = noteInput.value.trim() || "No note added yet.";
+      });
+
+      addressCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          addressCards.forEach((item) => item.classList.remove("is-selected"));
+          card.classList.add("is-selected");
+          selectedAddress.textContent = card.dataset.address;
+        });
+      });
+
+      shipmentCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          shipmentCards.forEach((item) => item.classList.remove("is-selected"));
+          card.classList.add("is-selected");
+          showToast(card.dataset.shipment + " selected.");
+        });
+      });
+
+      addAddressBtn.addEventListener("click", () => {
+        showToast("Address creation is mocked for this artifact.");
+      });
+
+      renderSteps(currentStep);
+      notePreview.textContent = noteInput.value.trim();
+    </script>
+  </body>
+</html>

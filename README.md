@@ -1,4 +1,4 @@
-# docliQ-land
+# trial-land
 
 A versioned collection of independent web applications built with [Better T Stack](https://github.com/AmanVarshney01/create-better-t-stack) + Tailwind CSS v3.
 
@@ -15,15 +15,18 @@ Each version is a fully independent application with:
 ## Project Structure
 
 ```
-docliQ-land/
+trial-land/
 ├── artifacts/        # Generated design artifacts (OOUX maps, IA maps, etc.)
 ├── common-language/  # Shared terminology & implementation patterns
-├── docs/             # Project documentation, plans, changelogs
 ├── fixtures/         # Shared fixture data (JSON) for all versions
+├── non-analyzed/     # Artifacts pending review/analysis
 ├── guidelines/       # Design system, copy, testing, deployment guides
 ├── knowledge/        # Iterative knowledge accumulation
+├── product-context/  # Product roadmaps, use cases, screenshots
+├── research/         # Raw research notes and findings
 ├── scripts/          # Knowledge automation scripts
-├── workflows/        # Design workflow templates (brainstorming, flows, ethics)
+├── skill-command/    # AI workflow prompts and slash command templates
+├── templates/        # Document templates (ADR, retrospective, etc.)
 └── versions/
     └── v1/           # Current active version
 ```
@@ -78,9 +81,10 @@ bun run knowledge:after
 ## Shared Resources
 
 - **Fixtures** (`fixtures/`): JSON test data shared across all versions (users, doctors, appointments, etc.)
-- **Guidelines** (`guidelines/`): Visual design system, copy guidelines, decision trees, deployment & testing guides
+- **Guidelines** (`guidelines/`): Visual design system, copy guidelines, component decision trees (`ui-decision-trees.md` — which to use, `component-specs.md` — how to implement + polish), deployment & testing guides
 - **Common Language** (`common-language/`): Shared terminology, state machines, and implementation patterns
-- **Workflows** (`workflows/`): Design process templates (brainstorming, hypothesis formation, solution tradeoffs, ethics gates)
+- **Skill Commands** (`skill-command/`): AI workflow prompts (brainstorming, hypothesis formation, solution tradeoffs, ethics gates)
+- **Templates** (`templates/`): Document templates (ADR, retrospective, quality gate, etc.)
 - **Knowledge** (`knowledge/`): Cross-version learnings, decision log, pattern library, lessons learned
 
 ## Versioning Philosophy
