@@ -1,0 +1,226 @@
+{
+  "main": {
+    "id": "fa3a7ff8df5205ca",
+    "type": "split",
+    "children": [
+      {
+        "id": "86ba0231eddd49f9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6f41c4cf45c7f6ab",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "REPO-BENEFITS.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "REPO-BENEFITS"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f776c70bf3c8df7c",
+    "type": "split",
+    "children": [
+      {
+        "id": "06a53b33926bbc95",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7e3b6868ff762d2c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "32fbe6d411b903b2",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "029749756c9154e6",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "a2353612899222ad",
+    "type": "split",
+    "children": [
+      {
+        "id": "2edb563f5f9c1ffb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "429bfcf9f0ba18b2",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "REPO-BENEFITS.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for REPO-BENEFITS"
+            }
+          },
+          {
+            "id": "10c99772677670f3",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "REPO-BENEFITS.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from REPO-BENEFITS"
+            }
+          },
+          {
+            "id": "05f1359a229584a7",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "89557d95b768a3d9",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "d3a3bcc703324834",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "REPO-BENEFITS.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of REPO-BENEFITS"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "6f41c4cf45c7f6ab",
+  "lastOpenFiles": [
+    "research/COMP260312-dedalus-orbis-snapshot.md",
+    "agent-browser/shadcn-health-base-abs-check.png",
+    "agent-browser",
+    "agent-browser.json",
+    "artifacts/DATA260312-corepvs-form-v0.html",
+    "artifacts/DATA260312-corepvs-dashboard-v0.html",
+    "artifacts/RSYN260312-health-dashboard-comparison.md",
+    "artifacts/DATA260312-corepvs-health-dashboard.html",
+    "docs/plans/2026-03-12-corepvs-health-dashboard-design.md",
+    "product-context/[DRAFT]-project-context-with-rationale.md",
+    "artifacts/DATA260312-tini-health-dashboard.html",
+    "docs/plans/2026-03-12-tini-health-dashboard-design.md",
+    "artifacts/DATA260312-shadcnstudio-dashboard.html",
+    "artifacts/DATA260312-shadcnstudio-purchase-order.html",
+    "artifacts/DATA260312-shadcn-health-base.html",
+    "artifacts/DATA260312-shadcnstudio-health-dashboard.html",
+    "docs/plans/2026-03-12-shadcnstudio-health-dashboard-design.md",
+    "docs/plans/2026-03-12-corepvs-playground-design.md",
+    "guidelines/ui-decision-trees.md",
+    "artifacts/FLOW260312-visual-stress-test-flow.md",
+    "non-analyzed/PRD260306-momii-dot-explorer-design.md",
+    "non-analyzed/IA260312-screen-list.md",
+    "non-analyzed/IA260312-ooux-dot-map.md",
+    "non-analyzed/IA260312-ia-map.md",
+    "non-analyzed/IA260312-ia-map-2.md",
+    "non-analyzed/FLOW260312-visual-stress-test-flow.md",
+    "non-analyzed/FLOW260312-profile-v2.md",
+    "non-analyzed/FLOW260312-notifications-v2.md",
+    "non-analyzed/FLOW260312-news-v2.md",
+    "non-analyzed/FLOW260312-home-v2.md",
+    "non-analyzed/FLOW260312-CR05-user-flows.md",
+    "non-analyzed/FLOW260312-CR05-user-flows-2.md",
+    "non-analyzed/FLOW260312-appointments-v2.md",
+    "artifacts/PRD260306-momii-dot-explorer-design.md",
+    "artifacts/IA260312-screen-list.md",
+    "artifacts/IA260312-ooux-dot-map.md",
+    "artifacts/IA260312-ia-map.md"
+  ]
+}

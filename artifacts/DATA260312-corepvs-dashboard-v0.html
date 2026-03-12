@@ -1,0 +1,1395 @@
+<!doctype html>
+<html lang="en" class="brand-corepvs-dashboard">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CorePVS Dashboard Mock</title>
+    <link rel="stylesheet" href="./DATA260312-corepvs-brand-primitives.css" />
+    <style>
+      :root {
+        /* Semantic tokens: components only use these. */
+        --background: var(--stone-25);
+        --foreground: var(--stone-900);
+        --card: var(--stone-0);
+        --card-foreground: var(--stone-900);
+        --popover: var(--stone-0);
+        --popover-foreground: var(--stone-900);
+        --primary: var(--blue-600);
+        --primary-foreground: var(--stone-0);
+        --secondary: var(--stone-50);
+        --secondary-foreground: var(--stone-700);
+        --muted: var(--stone-50);
+        --muted-foreground: var(--stone-500);
+        --accent: var(--blue-100);
+        --accent-foreground: var(--blue-600);
+        --destructive: var(--rose-500);
+        --destructive-foreground: var(--stone-0);
+        --success: var(--green-500);
+        --success-soft: var(--green-100);
+        --warning: var(--amber-500);
+        --warning-soft: var(--amber-100);
+        --info-soft: var(--violet-100);
+        --border: var(--stone-100);
+        --input: var(--stone-100);
+        --ring: var(--blue-300);
+        --radius: 24px;
+        --sidebar: var(--stone-0);
+        --sidebar-foreground: var(--stone-700);
+        --sidebar-accent: var(--stone-50);
+        --sidebar-accent-foreground: var(--blue-600);
+        --shadow-lg: 0 26px 60px color-mix(in oklab, var(--shadow-color) 10%, transparent);
+        --shadow-md: 0 14px 30px color-mix(in oklab, var(--shadow-color) 7%, transparent);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter Variable, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background:
+          linear-gradient(180deg, color-mix(in oklab, var(--stone-0) 35%, transparent), transparent 30%),
+          radial-gradient(circle at top left, color-mix(in oklab, var(--blue-300) 20%, transparent), transparent 28%),
+          radial-gradient(circle at right center, color-mix(in oklab, var(--cyan-300) 10%, transparent), transparent 32%),
+          var(--background);
+        color: var(--foreground);
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .shell {
+        width: min(1420px, calc(100vw - 36px));
+        margin: 14px auto;
+        padding: 12px;
+        border-radius: 30px;
+        background: color-mix(in oklab, var(--card) 72%, transparent);
+        border: 1px solid color-mix(in oklab, var(--border) 72%, transparent);
+        box-shadow: var(--shadow-lg);
+        backdrop-filter: blur(18px);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 228px minmax(0, 1.72fr) minmax(312px, 0.84fr);
+        gap: 14px;
+        min-height: 684px;
+      }
+
+      .sidebar,
+      .panel,
+      .composer,
+      .promo {
+        background: var(--card);
+        border: 1px solid color-mix(in oklab, var(--border) 72%, transparent);
+        border-radius: 24px;
+        box-shadow: var(--shadow-md);
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        padding: 14px 12px;
+        background: linear-gradient(180deg, color-mix(in oklab, var(--card) 98%, transparent), color-mix(in oklab, var(--stone-0) 94%, transparent));
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 6px 18px;
+      }
+
+      .brand-mark {
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 14%, transparent), color-mix(in oklab, var(--cyan-300) 22%, transparent));
+        color: var(--primary);
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 1.44rem;
+        font-weight: 750;
+        letter-spacing: -0.06em;
+      }
+
+      .menu-label {
+        margin: 16px 10px 8px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted-foreground);
+      }
+
+      .nav-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .nav-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 12px;
+        border: 1px solid transparent;
+        border-radius: 16px;
+        background: transparent;
+        color: var(--sidebar-foreground);
+        cursor: pointer;
+        transition: transform 140ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease;
+      }
+
+      .nav-item:hover,
+      .nav-item:focus-visible {
+        outline: none;
+        transform: translateX(2px);
+        background: var(--sidebar-accent);
+        border-color: color-mix(in oklab, var(--border) 90%, transparent);
+      }
+
+      .nav-item.is-active {
+        background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 12%, transparent), color-mix(in oklab, var(--primary) 20%, transparent));
+        border-color: color-mix(in oklab, var(--primary) 18%, transparent);
+        color: var(--sidebar-accent-foreground);
+        font-weight: 700;
+      }
+
+      .nav-item svg,
+      .icon-btn svg,
+      .chip svg,
+      .badge svg {
+        flex: 0 0 auto;
+      }
+
+      .nav-spacer {
+        flex: 1;
+      }
+
+      .promo {
+        padding: 14px;
+        margin-top: 12px;
+        background:
+          radial-gradient(circle at top right, color-mix(in oklab, var(--cyan-300) 26%, transparent), transparent 26%),
+          linear-gradient(180deg, color-mix(in oklab, var(--primary) 95%, transparent), color-mix(in oklab, var(--blue-500) 90%, transparent));
+        color: var(--primary-foreground);
+      }
+
+      .promo .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: color-mix(in oklab, var(--stone-0) 18%, transparent);
+        border: 1px solid color-mix(in oklab, var(--stone-0) 18%, transparent);
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .promo h2 {
+        margin: 12px 0 8px;
+        font-size: 1.16rem;
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+      }
+
+      .promo p {
+        margin: 0 0 12px;
+        color: color-mix(in oklab, var(--primary-foreground) 84%, transparent);
+        line-height: 1.34;
+        font-size: 0.88rem;
+      }
+
+      .btn,
+      .icon-btn,
+      .chip,
+      .search {
+        border: 1px solid color-mix(in oklab, var(--input) 92%, transparent);
+        background: var(--card);
+        color: var(--foreground);
+      }
+
+      .btn,
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 11px 16px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 140ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+      }
+
+      .btn:hover,
+      .chip:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px color-mix(in oklab, var(--shadow-color) 8%, transparent);
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: var(--primary-foreground);
+        border-color: color-mix(in oklab, var(--primary) 40%, transparent);
+      }
+
+      .btn-soft {
+        background: color-mix(in oklab, var(--stone-0) 18%, transparent);
+        color: var(--primary-foreground);
+        border-color: color-mix(in oklab, var(--stone-0) 22%, transparent);
+      }
+
+      .main {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 10px;
+      }
+
+      .topbar,
+      .right-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 20px;
+        background: color-mix(in oklab, var(--card) 90%, transparent);
+        border: 1px solid color-mix(in oklab, var(--border) 74%, transparent);
+        box-shadow: var(--shadow-md);
+      }
+
+      .topbar h2 {
+        margin: 0;
+        font-size: 1.72rem;
+        letter-spacing: -0.06em;
+        line-height: 1;
+      }
+
+      .topbar p {
+        margin: 4px 0 0;
+        color: var(--muted-foreground);
+        font-size: 0.88rem;
+      }
+
+      .search {
+        flex: 1;
+        min-width: 250px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 12px;
+        border-radius: 999px;
+        min-height: 44px;
+      }
+
+      .search input {
+        width: 100%;
+        border: 0;
+        outline: none;
+        background: transparent;
+        color: inherit;
+      }
+
+      .icon-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .icon-btn {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 140ms ease, background 160ms ease, border-color 160ms ease;
+      }
+
+      .icon-btn:hover,
+      .icon-btn:focus-visible {
+        outline: none;
+        transform: translateY(-1px);
+        border-color: color-mix(in oklab, var(--primary) 24%, transparent);
+        background: var(--accent);
+      }
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid color-mix(in oklab, var(--card) 100%, transparent);
+        background:
+          radial-gradient(circle at 34% 32%, var(--amber-100) 0 10%, transparent 11%),
+          radial-gradient(circle at 68% 30%, var(--rose-100) 0 12%, transparent 13%),
+          linear-gradient(145deg, color-mix(in oklab, var(--rose-500) 70%, transparent), color-mix(in oklab, var(--primary) 90%, transparent));
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-rows: minmax(286px, 1fr) auto auto;
+        gap: 10px;
+      }
+
+      .panel {
+        padding: 12px;
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .panel-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        letter-spacing: -0.03em;
+      }
+
+      .panel-subtle {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: var(--secondary);
+        color: var(--muted-foreground);
+        font-size: 0.76rem;
+        font-weight: 600;
+      }
+
+      .history-grid {
+        display: grid;
+        grid-template-columns: minmax(244px, 0.98fr) minmax(0, 1.12fr);
+        gap: 12px;
+      }
+
+      .body-card {
+        position: relative;
+        min-height: 284px;
+        border-radius: 18px;
+        background:
+          linear-gradient(180deg, color-mix(in oklab, var(--blue-100) 72%, transparent), color-mix(in oklab, var(--stone-0) 8%, transparent)),
+          linear-gradient(135deg, color-mix(in oklab, var(--stone-0) 96%, transparent), color-mix(in oklab, var(--stone-50) 98%, transparent));
+        border: 1px solid color-mix(in oklab, var(--border) 82%, transparent);
+        overflow: hidden;
+      }
+
+      .body-card svg {
+        position: absolute;
+        inset: 8px 8px 32px;
+        width: calc(100% - 16px);
+        height: calc(100% - 40px);
+      }
+
+      .zoom-bar {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted-foreground);
+      }
+
+      .zoom-pill {
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--card);
+        border: 1px solid color-mix(in oklab, var(--border) 90%, transparent);
+      }
+
+      .diagnosis-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .diagnosis-item {
+        display: grid;
+        grid-template-columns: auto 1fr 88px;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 18px;
+        border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+        background: linear-gradient(135deg, color-mix(in oklab, var(--stone-0) 99%, transparent), color-mix(in oklab, var(--secondary) 84%, transparent));
+        cursor: pointer;
+        transition: transform 150ms ease, border-color 160ms ease, box-shadow 160ms ease;
+      }
+
+      .diagnosis-item:hover,
+      .diagnosis-item.is-selected {
+        transform: translateY(-2px);
+        border-color: color-mix(in oklab, var(--primary) 24%, transparent);
+        box-shadow: 0 16px 34px color-mix(in oklab, var(--shadow-color) 8%, transparent);
+      }
+
+      .diagnosis-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: var(--info-soft);
+        color: var(--primary);
+      }
+
+      .diagnosis-item h4,
+      .mini-card h4,
+      .appointment-card h4,
+      .thread-card h4 {
+        margin: 0;
+        font-size: 0.95rem;
+        letter-spacing: -0.03em;
+      }
+
+      .diagnosis-item p,
+      .mini-card p,
+      .appointment-card p,
+      .thread-card p,
+      .prescription-card p {
+        margin: 4px 0 0;
+        color: var(--muted-foreground);
+        line-height: 1.28;
+        font-size: 0.74rem;
+      }
+
+      .author {
+        margin-top: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--stone-700);
+      }
+
+      .author-dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, color-mix(in oklab, var(--cyan-300) 90%, transparent), color-mix(in oklab, var(--primary) 75%, transparent));
+      }
+
+      .thumbs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      .thumb {
+        border-radius: 10px;
+        min-height: 60px;
+        border: 1px solid color-mix(in oklab, var(--border) 90%, transparent);
+        background:
+          radial-gradient(circle at 58% 44%, color-mix(in oklab, var(--stone-0) 46%, transparent), transparent 16%),
+          linear-gradient(160deg, var(--thumb-start), var(--thumb-end));
+      }
+
+      .overview-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        padding: 6px;
+        border-radius: 999px;
+        background: var(--secondary);
+      }
+
+      .tab {
+        padding: 9px 6px;
+        border-radius: 999px;
+        border: 0;
+        background: transparent;
+        color: var(--muted-foreground);
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 160ms ease, color 160ms ease, transform 140ms ease;
+      }
+
+      .tab:hover,
+      .tab:focus-visible,
+      .tab.is-active {
+        outline: none;
+        transform: translateY(-1px);
+        background: var(--card);
+        color: var(--foreground);
+        box-shadow: 0 10px 20px color-mix(in oklab, var(--shadow-color) 8%, transparent);
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .mini-card {
+        position: relative;
+        padding: 10px 12px;
+        border-radius: 18px;
+        border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+        background: linear-gradient(180deg, color-mix(in oklab, var(--stone-0) 99%, transparent), color-mix(in oklab, var(--secondary) 82%, transparent));
+        overflow: hidden;
+      }
+
+      .mini-card::after {
+        content: "";
+        position: absolute;
+        right: -10px;
+        bottom: -18px;
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        background: radial-gradient(circle, color-mix(in oklab, var(--accent-foreground) 14%, transparent), transparent 64%);
+      }
+
+      .mini-card .stat {
+        margin-top: 10px;
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: -0.06em;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.76rem;
+        font-weight: 600;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+
+      .status.ok .dot {
+        background: var(--success);
+      }
+
+      .status.warn .dot {
+        background: var(--warning);
+      }
+
+      .prescriptions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .prescription-card {
+        padding: 11px 12px 10px;
+        border-radius: 18px;
+        border: 1px solid color-mix(in oklab, var(--border) 78%, transparent);
+        background: linear-gradient(180deg, color-mix(in oklab, var(--stone-0) 100%, transparent), color-mix(in oklab, var(--secondary) 44%, transparent));
+      }
+
+      .prescription-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .pill-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .dose {
+        padding: 9px;
+        border-radius: 14px;
+        background: var(--secondary);
+      }
+
+      .dose strong {
+        display: block;
+        font-size: 0.82rem;
+      }
+
+      .dose span {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted-foreground);
+        font-size: 0.78rem;
+      }
+
+      .right-rail {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 12px;
+      }
+
+      .day-strip {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      .day-pill {
+        padding: 10px 6px;
+        border-radius: 14px;
+        border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+        background: var(--secondary);
+        text-align: center;
+        cursor: pointer;
+        transition: background 160ms ease, border-color 160ms ease, transform 140ms ease, color 160ms ease;
+      }
+
+      .day-pill small,
+      .day-pill strong {
+        display: block;
+      }
+
+      .day-pill small {
+        color: var(--muted-foreground);
+        font-size: 0.72rem;
+      }
+
+      .day-pill strong {
+        margin-top: 4px;
+        font-size: 0.86rem;
+      }
+
+      .day-pill:hover,
+      .day-pill.is-active {
+        transform: translateY(-2px);
+        background: var(--primary);
+        border-color: color-mix(in oklab, var(--primary) 40%, transparent);
+        color: var(--primary-foreground);
+      }
+
+      .day-pill:hover small,
+      .day-pill.is-active small {
+        color: color-mix(in oklab, var(--primary-foreground) 76%, transparent);
+      }
+
+      .appointment-list,
+      .thread-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .appointment-card,
+      .thread-card {
+        padding: 10px 12px;
+        border-radius: 18px;
+        border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+        background: linear-gradient(180deg, color-mix(in oklab, var(--stone-0) 99%, transparent), color-mix(in oklab, var(--secondary) 82%, transparent));
+      }
+
+      .appointment-meta,
+      .thread-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        background: var(--secondary);
+        color: var(--muted-foreground);
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
+
+      .join-btn {
+        min-width: 84px;
+        padding-inline: 12px;
+      }
+
+      .bot-column {
+        display: grid;
+        grid-template-rows: 1fr auto;
+        gap: 10px;
+      }
+
+      .composer {
+        padding: 12px;
+      }
+
+      .message-card {
+        padding: 12px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, color-mix(in oklab, var(--stone-0) 99%, transparent), color-mix(in oklab, var(--secondary) 82%, transparent));
+        border: 1px solid color-mix(in oklab, var(--border) 78%, transparent);
+      }
+
+      .message-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .message-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, color-mix(in oklab, var(--rose-500) 82%, transparent), color-mix(in oklab, var(--primary) 75%, transparent));
+      }
+
+      .scan-preview {
+        margin-top: 10px;
+        min-height: 68px;
+        border-radius: 16px;
+        border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+        background:
+          radial-gradient(circle at 30% 44%, color-mix(in oklab, var(--stone-0) 72%, transparent), transparent 18%),
+          linear-gradient(135deg, color-mix(in oklab, var(--primary) 90%, transparent), color-mix(in oklab, var(--cyan-300) 72%, transparent));
+        position: relative;
+        overflow: hidden;
+      }
+
+      .scan-preview::after {
+        content: "";
+        position: absolute;
+        inset: 16px;
+        border-radius: 14px;
+        background:
+          radial-gradient(circle at 48% 54%, color-mix(in oklab, var(--stone-0) 62%, transparent) 0 16%, transparent 17%),
+          radial-gradient(circle at 48% 54%, color-mix(in oklab, var(--stone-0) 22%, transparent) 0 33%, transparent 34%);
+        border: 1px solid color-mix(in oklab, var(--stone-0) 18%, transparent);
+      }
+
+      .composer-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .composer-input {
+        flex: 1;
+        min-height: 42px;
+        padding: 0 14px;
+        border-radius: 999px;
+        border: 1px solid color-mix(in oklab, var(--input) 95%, transparent);
+        background: var(--card);
+        outline: none;
+      }
+
+      .composer-input:focus {
+        border-color: color-mix(in oklab, var(--ring) 100%, transparent);
+        box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 18%, transparent);
+      }
+
+      .send-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 0;
+        display: grid;
+        place-items: center;
+      }
+
+      .toast {
+        position: fixed;
+        right: 28px;
+        bottom: 24px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: color-mix(in oklab, var(--stone-900) 92%, transparent);
+        color: var(--stone-0);
+        box-shadow: var(--shadow-lg);
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+
+      .toast.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 1220px) {
+        .layout {
+          grid-template-columns: 210px minmax(0, 1fr);
+        }
+
+        .right-rail {
+          grid-column: 1 / -1;
+        }
+      }
+
+      @media (max-width: 960px) {
+        .shell {
+          width: calc(100vw - 20px);
+          padding: 12px;
+          margin: 10px auto;
+          border-radius: 24px;
+        }
+
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .history-grid,
+        .metrics,
+        .prescriptions {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar,
+        .right-topbar {
+          flex-wrap: wrap;
+        }
+
+        .day-strip,
+        .tabs {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="layout">
+        <aside class="sidebar">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M6.5 7.5c0-2.2 1.8-4 4-4 1.7 0 3.1 1 3.7 2.5C14.8 5 16.2 4 17.9 4c2.3 0 4.1 1.8 4.1 4.1 0 3.7-4 6.8-10 11.8C6 14.9 2 11.8 2 8.1 2 5.8 3.8 4 6.1 4 7.8 4 9.2 5 9.8 6.5" />
+              </svg>
+            </div>
+            <div>
+              <h1>SynthCare.</h1>
+            </div>
+          </div>
+
+          <nav class="nav-list" aria-label="Primary">
+            <button class="nav-item is-active" type="button">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M3 13h8V3H3zM13 21h8v-6h-8zM13 11h8V3h-8zM3 21h8v-6H3z" />
+              </svg>
+              Dashboard
+            </button>
+            <button class="nav-item" type="button">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3.5" y="4" width="17" height="16" rx="3" />
+                <path d="M8 2.8v4.4M16 2.8v4.4M3.5 9h17" />
+              </svg>
+              Appointments
+            </button>
+            <button class="nav-item" type="button">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M20 21a8 8 0 1 0-16 0" />
+                <circle cx="12" cy="8" r="4" />
+              </svg>
+              Doctors
+            </button>
+            <button class="nav-item" type="button">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M7 10h10M7 14h7" />
+                <path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-4 3v-3H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
+              </svg>
+              Messages
+            </button>
+            <button class="nav-item" type="button">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 3v6l3 3" />
+                <circle cx="12" cy="12" r="9" />
+              </svg>
+              AI Care
+            </button>
+          </nav>
+
+          <div class="menu-label">Other menu</div>
+          <nav class="nav-list">
+            <button class="nav-item" type="button">Health Records</button>
+            <button class="nav-item" type="button">Prescriptions</button>
+            <button class="nav-item" type="button">Billing &amp; Insurance</button>
+            <button class="nav-item" type="button">Resources</button>
+          </nav>
+
+          <div class="menu-label">Support</div>
+          <nav class="nav-list">
+            <button class="nav-item" type="button">Settings</button>
+            <button class="nav-item" type="button">Help Center</button>
+            <button class="nav-item" type="button" style="color: var(--destructive);">Logout</button>
+          </nav>
+
+          <div class="nav-spacer"></div>
+
+          <section class="promo">
+            <span class="badge">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="4" y="5" width="16" height="14" rx="3" />
+                <path d="M8 3v4M16 3v4M7 11h10" />
+              </svg>
+              1 Month Free
+            </span>
+            <h2>Have you tried our new Mobile App?</h2>
+            <p>Track appointments, medication, and insights with the same dashboard language.</p>
+            <button class="btn btn-soft" type="button">Download Now</button>
+          </section>
+        </aside>
+
+        <main class="main">
+          <header class="topbar">
+            <div>
+              <h2>Good Morning! 👋</h2>
+              <p>Here is your care overview for today.</p>
+            </div>
+            <div class="search" role="search">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+              <input type="text" value="" placeholder="Search now" />
+            </div>
+            <div class="icon-row">
+              <button class="icon-btn" type="button" aria-label="Notifications">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M15 18H5l1.5-2.5V11a5.5 5.5 0 1 1 11 0v4.5L19 18h-4Z" />
+                  <path d="M10 20a2 2 0 0 0 4 0" />
+                </svg>
+              </button>
+              <button class="icon-btn" type="button" aria-label="Alerts">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M12 3v10" />
+                  <path d="m8 9 4 4 4-4" />
+                  <path d="M4 19h16" />
+                </svg>
+              </button>
+              <div class="avatar" aria-label="Profile"></div>
+            </div>
+          </header>
+
+          <div class="content-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <h3>History of Diagnosis</h3>
+                <div class="panel-subtle">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="4" y="5" width="16" height="14" rx="3" />
+                    <path d="M8 3v4M16 3v4M4 10h16" />
+                  </svg>
+                  Today
+                </div>
+              </div>
+
+              <div class="history-grid">
+                <div class="body-card">
+                  <svg viewBox="0 0 260 340" fill="none">
+                    <defs>
+                      <linearGradient id="bodyFill" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="color-mix(in oklab, var(--rose-500) 86%, transparent)"></stop>
+                        <stop offset="100%" stop-color="color-mix(in oklab, var(--amber-500) 56%, transparent)"></stop>
+                      </linearGradient>
+                      <linearGradient id="limbFill" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="color-mix(in oklab, var(--rose-500) 90%, transparent)"></stop>
+                        <stop offset="100%" stop-color="color-mix(in oklab, var(--amber-500) 64%, transparent)"></stop>
+                      </linearGradient>
+                    </defs>
+                    <g opacity="0.14" stroke="color-mix(in oklab, var(--primary) 80%, transparent)" stroke-width="2.4">
+                      <path d="M20 96c44 0 70 14 110 14 36 0 62-14 106-14" />
+                      <path d="M20 222c42 0 72-16 110-16 34 0 66 16 106 16" />
+                    </g>
+                    <circle cx="129" cy="40" r="18" fill="url(#bodyFill)" />
+                    <path d="M104 58c5-10 14-16 25-16s20 6 25 16l13 40-7 56 8 108H90l8-108-7-56 13-40Z" fill="url(#bodyFill)" />
+                    <path d="M88 88 62 142l12 10 33-38M170 88l26 54-12 10-33-38" fill="url(#limbFill)" opacity="0.94" />
+                    <path d="M108 262 92 318l15 5 23-58M150 262l16 56-15 5-23-58" fill="url(#limbFill)" opacity="0.94" />
+                    <path d="M112 92c8 8 26 8 34 0" stroke="color-mix(in oklab, var(--stone-0) 28%, transparent)" stroke-width="3" stroke-linecap="round" />
+                    <circle cx="129" cy="102" r="16" fill="color-mix(in oklab, var(--stone-0) 56%, transparent)" />
+                    <circle cx="129" cy="102" r="10" fill="color-mix(in oklab, var(--primary) 72%, transparent)" />
+                    <circle cx="129" cy="188" r="12" fill="color-mix(in oklab, var(--primary) 28%, transparent)" stroke="color-mix(in oklab, var(--primary) 58%, transparent)" stroke-width="3" />
+                    <circle cx="98" cy="250" r="10" fill="color-mix(in oklab, var(--primary) 24%, transparent)" stroke="color-mix(in oklab, var(--primary) 50%, transparent)" stroke-width="3" />
+                    <circle cx="161" cy="250" r="10" fill="color-mix(in oklab, var(--primary) 24%, transparent)" stroke="color-mix(in oklab, var(--primary) 50%, transparent)" stroke-width="3" />
+                  </svg>
+                  <div class="zoom-bar">
+                    <div class="zoom-pill">-</div>
+                    <div class="zoom-pill" style="background: var(--primary); color: var(--primary-foreground);">+</div>
+                  </div>
+                </div>
+
+                <div class="diagnosis-list">
+                  <article class="diagnosis-item is-selected" data-diagnosis="Heart rate slightly elevated but stable. Continue monitoring and maintain hydration.">
+                    <div class="diagnosis-icon">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M12 21s-6.7-4.3-8.9-8C1.5 10.2 2.6 6.5 6 5.3c2-.7 4 .2 5 1.7 1-1.5 3-2.4 5-1.7 3.4 1.2 4.5 4.9 2.9 7.7C18.7 16.7 12 21 12 21Z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4>Heart Problem</h4>
+                      <p>Coronary artery disease is a common heart condition that affects blood vessels.</p>
+                      <div class="author">
+                        <span class="author-dot"></span>
+                        Dr. Ronald Richards
+                      </div>
+                    </div>
+                    <div class="thumbs">
+                      <div class="thumb" style="--thumb-start: color-mix(in oklab, var(--rose-500) 90%, transparent); --thumb-end: color-mix(in oklab, var(--amber-500) 72%, transparent);"></div>
+                      <div class="thumb" style="--thumb-start: color-mix(in oklab, var(--amber-500) 92%, transparent); --thumb-end: color-mix(in oklab, var(--warning-soft) 100%, transparent);"></div>
+                    </div>
+                  </article>
+
+                  <article class="diagnosis-item" data-diagnosis="Kidney function appears consistent. Mild inflammation markers should be rechecked next week.">
+                    <div class="diagnosis-icon" style="background: var(--accent);">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M7 4c3 0 5 2.5 5 6v4c0 3-1.8 6-5 6S2 17 2 14v-4c0-3.5 2-6 5-6Zm10 0c3 0 5 2.5 5 6v4c0 3-1.8 6-5 6s-5-3-5-6v-4c0-3.5 2-6 5-6Z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4>Kidney Problem</h4>
+                      <p>Inflammation changes are visible in the renal system with moderate response.</p>
+                      <div class="author">
+                        <span class="author-dot"></span>
+                        Dr. Leslie Alexander
+                      </div>
+                    </div>
+                    <div class="thumbs">
+                      <div class="thumb" style="--thumb-start: color-mix(in oklab, var(--blue-600) 88%, transparent); --thumb-end: color-mix(in oklab, var(--cyan-300) 66%, transparent);"></div>
+                      <div class="thumb" style="--thumb-start: color-mix(in oklab, var(--primary) 88%, transparent); --thumb-end: color-mix(in oklab, var(--violet-500) 62%, transparent);"></div>
+                    </div>
+                  </article>
+
+                  <article class="diagnosis-item" data-diagnosis="Knee joints show localized pressure stress. Reduce load and follow the recovery exercise plan.">
+                    <div class="diagnosis-icon" style="background: var(--warning-soft); color: var(--warning);">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 4v6l-3 5 1 5M14 4v6l3 5-1 5" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4>Knee Problem</h4>
+                      <p>Minor strain around the joint needs supportive mobility care and scheduled review.</p>
+                      <div class="author">
+                        <span class="author-dot"></span>
+                        Dr. Robert Fox
+                      </div>
+                    </div>
+                    <div class="thumbs">
+                      <div class="thumb" style="--thumb-start: color-mix(in oklab, var(--stone-900) 94%, transparent); --thumb-end: color-mix(in oklab, var(--primary) 72%, transparent);"></div>
+                      <div class="thumb" style="--thumb-start: color-mix(in oklab, var(--rose-500) 90%, transparent); --thumb-end: color-mix(in oklab, var(--stone-700) 80%, transparent);"></div>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Health Overview</h3>
+                <div class="panel-subtle">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="4" y="5" width="16" height="14" rx="3" />
+                    <path d="M8 3v4M16 3v4M4 10h16" />
+                  </svg>
+                  Today
+                </div>
+              </div>
+              <div class="overview-grid">
+                <div class="tabs" role="tablist" aria-label="Health segments">
+                  <button class="tab is-active" type="button" data-tab="heart">Heart</button>
+                  <button class="tab" type="button" data-tab="lungs">Lungs</button>
+                  <button class="tab" type="button" data-tab="stomach">Stomach</button>
+                  <button class="tab" type="button" data-tab="body">Body</button>
+                  <button class="tab" type="button" data-tab="eye">Eye</button>
+                </div>
+                <div class="metrics" id="metricGrid">
+                  <article class="mini-card">
+                    <div class="status ok"><span class="dot"></span>Normal</div>
+                    <h4>Heart Rate</h4>
+                    <div class="stat">120 bpm</div>
+                  </article>
+                  <article class="mini-card">
+                    <div class="status ok"><span class="dot"></span>Good</div>
+                    <h4>Blood Count</h4>
+                    <div class="stat">80-90</div>
+                  </article>
+                  <article class="mini-card">
+                    <div class="status ok"><span class="dot"></span>Normal</div>
+                    <h4>Glucose</h4>
+                    <div class="stat">230 /ml</div>
+                  </article>
+                  <article class="mini-card">
+                    <div class="status warn"><span class="dot"></span>Low</div>
+                    <h4>Hemoglobin</h4>
+                    <div class="stat">56 /ml</div>
+                  </article>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Your Prescriptions</h3>
+                <div class="panel-subtle">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="4" y="5" width="16" height="14" rx="3" />
+                    <path d="M8 3v4M16 3v4M4 10h16" />
+                  </svg>
+                  Today
+                </div>
+              </div>
+              <div class="prescriptions">
+                <article class="prescription-card">
+                  <div class="prescription-top">
+                    <div>
+                      <h4>Paracetamol - 500mg</h4>
+                      <p>1 tablet every day for 2 weeks</p>
+                    </div>
+                    <span class="tag">Morning care</span>
+                  </div>
+                  <div class="pill-list">
+                    <div class="dose"><strong>Morning</strong><span>1-pill</span></div>
+                    <div class="dose"><strong>Afternoon</strong><span>1-pill</span></div>
+                    <div class="dose"><strong>Evening</strong><span>1-pill</span></div>
+                  </div>
+                </article>
+                <article class="prescription-card">
+                  <div class="prescription-top">
+                    <div>
+                      <h4>Liquifying - 450ml</h4>
+                      <p>1 tablet every day for 2 weeks</p>
+                    </div>
+                    <span class="tag">Fluid plan</span>
+                  </div>
+                  <div class="pill-list">
+                    <div class="dose"><strong>Morning</strong><span>1-spoon</span></div>
+                    <div class="dose"><strong>Afternoon</strong><span>1-spoon</span></div>
+                    <div class="dose"><strong>Evening</strong><span>1-spoon</span></div>
+                  </div>
+                </article>
+              </div>
+            </section>
+          </div>
+        </main>
+
+        <aside class="right-rail">
+          <section class="panel">
+            <div class="right-topbar">
+              <h3 style="margin: 0; font-size: 1.2rem; letter-spacing: -0.03em;">Upcoming Appointments</h3>
+              <div class="panel-subtle">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <rect x="4" y="5" width="16" height="14" rx="3" />
+                  <path d="M8 3v4M16 3v4M4 10h16" />
+                </svg>
+                Today
+              </div>
+            </div>
+            <div class="day-strip" id="dayStrip">
+              <button class="day-pill" type="button"><small>Mon</small><strong>08</strong></button>
+              <button class="day-pill" type="button"><small>Tue</small><strong>09</strong></button>
+              <button class="day-pill is-active" type="button"><small>Wed</small><strong>10</strong></button>
+              <button class="day-pill" type="button"><small>Thu</small><strong>11</strong></button>
+              <button class="day-pill" type="button"><small>Fri</small><strong>12</strong></button>
+              <button class="day-pill" type="button"><small>Sat</small><strong>13</strong></button>
+            </div>
+            <div class="appointment-list">
+              <article class="appointment-card">
+                <div class="appointment-meta">
+                  <div>
+                        <h4>MRI-Right thigh</h4>
+                        <p><span class="author-dot" style="width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;"></span>Dr. Damian Lewis<br />Cardiologist</p>
+                  </div>
+                  <button class="btn btn-primary join-btn" type="button">Join Now</button>
+                </div>
+                <p style="margin-top: 12px;">06:00 PM</p>
+              </article>
+              <article class="appointment-card">
+                <div class="appointment-meta">
+                  <div>
+                        <h4>Surgery preparation</h4>
+                        <p><span class="author-dot" style="width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;background:linear-gradient(145deg, color-mix(in oklab, var(--amber-500) 78%, transparent), color-mix(in oklab, var(--rose-500) 72%, transparent));"></span>Dr. Dianne Russell<br />Cardiologist</p>
+                  </div>
+                  <button class="btn btn-primary join-btn" type="button">Join Now</button>
+                </div>
+                <p style="margin-top: 12px;">08:00 PM</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="bot-column">
+            <div class="panel">
+              <div class="panel-header">
+                <h3>AI Care</h3>
+                <div class="icon-row">
+                  <button class="icon-btn" type="button" aria-label="Expand">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M8 3H3v5M21 8V3h-5M3 16v5h5M16 21h5v-5" />
+                    </svg>
+                  </button>
+                  <button class="icon-btn" type="button" aria-label="More">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                      <circle cx="6" cy="12" r="1.8"></circle>
+                      <circle cx="12" cy="12" r="1.8"></circle>
+                      <circle cx="18" cy="12" r="1.8"></circle>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="thread-list" id="threadList">
+                <article class="thread-card">
+                  <div class="message-head">
+                    <div class="message-avatar"></div>
+                    <div>
+                      <h4>You</h4>
+                      <p id="diagnosisText">Brain problems can manifest in various ways. Symptoms may include memory issues, changes in mood or behavior, difficulty concentrating, or coordination problems.</p>
+                    </div>
+                  </div>
+                  <div class="scan-preview"></div>
+                </article>
+                <article class="thread-card">
+                  <div class="message-head">
+                    <div class="message-avatar" style="background: linear-gradient(145deg, color-mix(in oklab, var(--cyan-300) 82%, transparent), color-mix(in oklab, var(--primary) 72%, transparent));"></div>
+                    <div>
+                      <h4>AI Care</h4>
+                      <p>Selected diagnosis cards update this summary so you can compare findings against your upcoming appointments.</p>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <div class="composer">
+              <div class="composer-bar">
+                <input class="composer-input" id="composerInput" type="text" placeholder="Search now" />
+                <button class="btn btn-primary send-btn" id="sendBtn" type="button" aria-label="Send">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m4 12 15-7-4 7 4 7-15-7Zm0 0h11" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const diagnosisCards = document.querySelectorAll(".diagnosis-item");
+      const diagnosisText = document.getElementById("diagnosisText");
+      const dayPills = document.querySelectorAll(".day-pill");
+      const tabs = document.querySelectorAll(".tab");
+      const metricGrid = document.getElementById("metricGrid");
+      const composerInput = document.getElementById("composerInput");
+      const sendBtn = document.getElementById("sendBtn");
+      const toast = document.getElementById("toast");
+
+      const metricSets = {
+        heart: [
+          ["Heart Rate", "120 bpm", "Normal", "ok"],
+          ["Blood Count", "80-90", "Good", "ok"],
+          ["Glucose", "230 /ml", "Normal", "ok"],
+          ["Hemoglobin", "56 /ml", "Low", "warn"],
+        ],
+        lungs: [
+          ["Breath Cycle", "18 rpm", "Stable", "ok"],
+          ["Oxygen", "97%", "Strong", "ok"],
+          ["Pressure", "22 mm", "Normal", "ok"],
+          ["Recovery", "61%", "Watch", "warn"],
+        ],
+        stomach: [
+          ["Acidity", "4.2 pH", "Balanced", "ok"],
+          ["Digestive Rate", "78%", "Good", "ok"],
+          ["Hydration", "63%", "Normal", "ok"],
+          ["Sensitivity", "14%", "Mild", "warn"],
+        ],
+        body: [
+          ["Fatigue", "24%", "Recovering", "ok"],
+          ["Mobility", "81%", "Strong", "ok"],
+          ["Inflammation", "12%", "Normal", "ok"],
+          ["Sleep Debt", "2.1 h", "Low", "warn"],
+        ],
+        eye: [
+          ["Focus", "20/24", "Stable", "ok"],
+          ["Dryness", "18%", "Mild", "warn"],
+          ["Pressure", "13 mmHg", "Normal", "ok"],
+          ["Reaction", "0.22 s", "Good", "ok"],
+        ],
+      };
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        clearTimeout(showToast.timeoutId);
+        showToast.timeoutId = setTimeout(() => {
+          toast.classList.remove("is-visible");
+        }, 1800);
+      }
+
+      diagnosisCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          diagnosisCards.forEach((item) => item.classList.remove("is-selected"));
+          card.classList.add("is-selected");
+          diagnosisText.textContent = card.dataset.diagnosis;
+        });
+      });
+
+      dayPills.forEach((pill) => {
+        pill.addEventListener("click", () => {
+          dayPills.forEach((item) => item.classList.remove("is-active"));
+          pill.classList.add("is-active");
+          showToast("Appointment day updated.");
+        });
+      });
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((item) => item.classList.remove("is-active"));
+          tab.classList.add("is-active");
+          metricGrid.innerHTML = metricSets[tab.dataset.tab]
+            .map(
+              ([label, value, state, tone]) => `
+                <article class="mini-card">
+                  <div class="status ${tone}"><span class="dot"></span>${state}</div>
+                  <h4>${label}</h4>
+                  <div class="stat">${value}</div>
+                </article>
+              `,
+            )
+            .join("");
+        });
+      });
+
+      sendBtn.addEventListener("click", () => {
+        const value = composerInput.value.trim();
+        if (!value) {
+          showToast("Type a question to send.");
+          return;
+        }
+        showToast("Prompt queued for AI Care.");
+        composerInput.value = "";
+      });
+    </script>
+  </body>
+</html>

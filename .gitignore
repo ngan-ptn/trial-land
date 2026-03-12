@@ -38,3 +38,7 @@ yarn-error.log*
 
 # Bun
 bun.lockb
+
+# Agent browser screenshots
+/agent-browser/*
+!/agent-browser/.gitkeep

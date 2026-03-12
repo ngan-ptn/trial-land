@@ -10,6 +10,32 @@
 
 <!-- New knowledge entries go here (above this comment) -->
 
+## KL-W001: Token Bridge CSS For Static HTML Previews [Experiment]
+
+**Date:** 2026-03-12
+**Context:** Static artifact previews for the SynthCare dashboard and purchase-order modal
+**Source Version:** v1
+
+**Initial Assumption:**
+Artifact HTML previews would need their own separate palette and typography rules to match screenshot styling.
+
+**Reality Discovered:**
+A shared bridge stylesheet can expose the exact Tini semantic token values and map them onto preview-specific aliases, letting static HTML mocks reuse the same color, radius, shadow, motion, and typography primitives without rebuilding the app.
+
+**Evidence:**
+- Existing artifacts already had stable HTML structure and light interaction scripts.
+- The main gap was the token layer, not layout composition.
+- Tini token semantics covered both previews once a small alias layer was added for screenshot-specific accents.
+
+**Impact on Approach:**
+- Keep preview HTML files thin and mostly unchanged.
+- Centralize token sourcing in one artifact stylesheet for reuse across future mockups.
+
+**Lesson Learned:**
+For static UI validation, treat the token layer as the reusable asset and the HTML file as a disposable skin.
+
+**Tags:** [Experiment]
+
 ---
 
 ## Adding New Knowledge Log Entries

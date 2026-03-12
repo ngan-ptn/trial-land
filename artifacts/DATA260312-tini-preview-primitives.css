@@ -1,0 +1,127 @@
+:root {
+  /* Exact Tini semantic tokens sourced from /Users/nganpham/Downloads/Tini Tokens Library.md */
+  --tini-background: oklch(0.99 0.003 250);
+  --tini-foreground: oklch(0.22 0.02 240);
+  --tini-card: oklch(1 0 0);
+  --tini-card-foreground: oklch(0.22 0.02 240);
+  --tini-popover: oklch(1 0 0);
+  --tini-popover-foreground: oklch(0.22 0.02 240);
+  --tini-primary: oklch(0.5 0.19 250);
+  --tini-primary-foreground: oklch(1 0 0);
+  --tini-secondary: oklch(0.96 0 228.43);
+  --tini-secondary-foreground: oklch(0.22 0.02 240);
+  --tini-muted: oklch(0.96 0 228.43);
+  --tini-muted-foreground: oklch(0.45 0.02 240);
+  --tini-accent: oklch(0.96 0.04 156.7);
+  --tini-accent-foreground: oklch(0.22 0.02 240);
+  --tini-destructive: oklch(0.53 0.22 25);
+  --tini-destructive-foreground: oklch(1 0 0);
+  --tini-border: oklch(0.91 0.02 250);
+  --tini-input: oklch(0.91 0.02 250);
+  --tini-ring: oklch(0.5 0.19 250);
+  --tini-sidebar: oklch(0.97 0 0);
+  --tini-sidebar-foreground: oklch(0.22 0.02 240);
+  --tini-sidebar-primary: oklch(0.5 0.19 250);
+  --tini-sidebar-primary-foreground: oklch(1 0 0);
+  --tini-sidebar-accent: oklch(0.93 0.03 250);
+  --tini-sidebar-accent-foreground: oklch(0.3 0.03 240);
+  --tini-sidebar-border: oklch(0.91 0.02 250);
+  --tini-sidebar-ring: oklch(0.5 0.19 250);
+  --tini-chart-1: oklch(0.58 0.13 263.17);
+  --tini-chart-2: oklch(0.67 0.12 167.07);
+  --tini-chart-3: oklch(0.61 0.23 27.33);
+  --tini-chart-4: oklch(0.65 0.11 47.01);
+  --tini-chart-5: oklch(0.8 0.09 91.92);
+  --tini-overlay: oklch(0.22 0.02 240 / 0.5);
+  --tini-placeholder: oklch(0.6 0.02 240);
+  --tini-stripe: oklch(0.97 0.003 250);
+  --tini-info: oklch(0.92 0.06 240);
+  --tini-info-foreground: oklch(0.22 0.02 240);
+  --tini-info-border: oklch(0.8 0.08 240);
+  --tini-success: oklch(0.92 0.08 150);
+  --tini-success-foreground: oklch(0.22 0.02 240);
+  --tini-success-border: oklch(0.78 0.1 150);
+  --tini-warning: oklch(0.93 0.08 85);
+  --tini-warning-foreground: oklch(0.22 0.02 240);
+  --tini-warning-border: oklch(0.8 0.1 85);
+  --tini-destructive-border: oklch(0.7 0.15 25);
+
+  --radius: 10px;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-full: 9999px;
+  --spacing: 0.25rem;
+  --tracking-normal: -0.025em;
+  --font-sans: system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-weight-normal: 400;
+  --font-weight-bold: 500;
+  --line-height-dense: 1.25;
+  --line-height-normal: 1.5;
+  --motion-fast: 150ms;
+  --motion-normal: 200ms;
+  --motion-slow: 300ms;
+  --shadow-color: oklch(0.22 0.03 250);
+  --tini-shadow-2xs: 0 1px 2px 0 oklch(0.22 0.03 250 / 0.08);
+  --tini-shadow-xs: 0 1px 3px 0 oklch(0.22 0.03 250 / 0.1);
+  --tini-shadow-sm:
+    0 1px 3px 0 oklch(0.22 0.03 250 / 0.12),
+    0 1px 2px -1px oklch(0.22 0.03 250 / 0.12);
+  --tini-shadow:
+    0 2px 6px 0 oklch(0.22 0.03 250 / 0.12),
+    0 1px 3px -1px oklch(0.22 0.03 250 / 0.1);
+  --tini-shadow-md:
+    0 4px 8px -1px oklch(0.22 0.03 250 / 0.14),
+    0 2px 4px -1px oklch(0.22 0.03 250 / 0.1);
+  --tini-shadow-lg:
+    0 8px 16px -2px oklch(0.22 0.03 250 / 0.14),
+    0 4px 6px -1px oklch(0.22 0.03 250 / 0.1);
+  --tini-shadow-xl:
+    0 14px 28px -4px oklch(0.22 0.03 250 / 0.16),
+    0 6px 10px -2px oklch(0.22 0.03 250 / 0.1);
+  --tini-shadow-2xl: 0 24px 48px -8px oklch(0.22 0.03 250 / 0.2);
+
+  /* Preview bridge aliases */
+  --stone-0: var(--tini-card);
+  --stone-25: var(--tini-background);
+  --stone-50: var(--tini-secondary);
+  --stone-75: color-mix(in oklab, var(--tini-secondary) 82%, white);
+  --stone-100: var(--tini-border);
+  --stone-200: color-mix(in oklab, var(--tini-border) 90%, var(--tini-foreground));
+  --stone-400: var(--tini-placeholder);
+  --stone-500: var(--tini-muted-foreground);
+  --stone-600: color-mix(in oklab, var(--tini-foreground) 76%, white);
+  --stone-700: color-mix(in oklab, var(--tini-foreground) 88%, white);
+  --stone-900: var(--tini-foreground);
+  --blue-100: var(--tini-info);
+  --blue-300: var(--tini-ring);
+  --blue-500: var(--tini-primary);
+  --blue-600: var(--tini-sidebar-primary);
+  --cyan-300: var(--tini-chart-2);
+  --green-100: var(--tini-success);
+  --green-500: var(--tini-success-border);
+  --amber-100: var(--tini-warning);
+  --amber-500: var(--tini-warning-border);
+  --orange-100: var(--tini-chart-4);
+  --orange-500: var(--tini-chart-3);
+  --emerald-100: var(--tini-success);
+  --emerald-500: var(--tini-success-border);
+  --rose-100: var(--tini-destructive-border);
+  --rose-500: var(--tini-destructive);
+  --violet-100: var(--tini-sidebar-accent);
+  --violet-500: var(--tini-chart-1);
+}
+
+html,
+body {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-normal);
+}
+
+table,
+[data-tabular],
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
