@@ -21,7 +21,7 @@ trial-land/
 └── .claude/skills/   # Claude-specific skills
 ```
 
-## Available Skills (Slash Commands)
+## Available Skills (Claude Slash Commands)
 
 | Command | When to Use |
 |---------|-------------|
@@ -35,6 +35,17 @@ trial-land/
 | `/user-flows` | Generate User Flow documentation with JTBD |
 
 Skills are defined in `.claude/skills/` folder.
+These are Claude slash commands, not repo shell commands.
+
+## Knowledge Commands From The Repo Root
+
+Use the repo scripts when working from the terminal:
+
+| Command | Purpose |
+|---------|---------|
+| `bun run knowledge:during` | During development - capture a learning immediately |
+| `bun run knowledge:weekly` | Weekly - sync progress, review experiments |
+| `bun run knowledge:after` | After iteration - comprehensive review |
 
 ## Knowledge System
 
@@ -122,7 +133,7 @@ Default sequence for any new design output:
 1. Pick the right template from `templates/` if one exists
 2. Fill it in
 3. Save to `artifacts/` using the naming convention: `[CODE][YYMMDD]-[slug].md`
-4. After saving: run `/knowledge:during` to log what was decided and why
+4. After saving: run `bun run knowledge:during` to log what was decided and why
 
 If no matching template exists: create the artifact directly in `artifacts/`, still named by convention.
 
@@ -139,16 +150,16 @@ If no matching template exists: create the artifact directly in `artifacts/`, st
 
 ### Knowledge Capture (apply automatically)
 
-- After creating an artifact or making a key decision: run `/knowledge:during`
+- After creating an artifact or making a key decision: run `bun run knowledge:during`
 - Log: what was decided, why, and what alternatives were considered
 - Tag: `[Experiment]` (untested) → `[Reusable]` (worked once) → `[Adopted]` (validated 2+ times)
 
 ### Repeatable Workflows
 
 These run automatically — no need to ask:
-- **New artifact**: template → fill → `artifacts/[CODE][YYMMDD]-slug.md` → `/knowledge:during`
+- **New artifact**: template → fill → `artifacts/[CODE][YYMMDD]-slug.md` → `bun run knowledge:during`
 - **New design standard**: add to `guidelines/` → update `REPO-BENEFITS.md` if folder purpose changes
-- **End of session**: if anything was decided or learned → `/knowledge:during` before closing
+- **End of session**: if anything was decided or learned → `bun run knowledge:during` before closing
 
 ### UI Verification
 

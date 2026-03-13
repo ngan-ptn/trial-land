@@ -185,6 +185,7 @@
   },
   "active": "6f41c4cf45c7f6ab",
   "lastOpenFiles": [
+    "guidelines/component-specs.md",
     "research/COMP260312-dedalus-orbis-snapshot.md",
     "agent-browser/shadcn-health-base-abs-check.png",
     "agent-browser",
@@ -220,7 +221,6 @@
     "non-analyzed/FLOW260312-appointments-v2.md",
     "artifacts/PRD260306-momii-dot-explorer-design.md",
     "artifacts/IA260312-screen-list.md",
-    "artifacts/IA260312-ooux-dot-map.md",
-    "artifacts/IA260312-ia-map.md"
+    "artifacts/IA260312-ooux-dot-map.md"
   ]
 }
