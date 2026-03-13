@@ -10,6 +10,32 @@
 
 <!-- New knowledge entries go here (above this comment) -->
 
+## KL-W002: Bird-Eye Boards Need Explicit Inference Markers [Reusable]
+
+**Date:** 2026-03-13
+**Context:** Translating wide role-based bird-eye images into markdown flow artifacts
+**Source Version:** N/A
+
+**Initial Assumption:**
+The exported bird-eye images would be legible enough to transcribe directly into structured user flows.
+
+**Reality Discovered:**
+The section headers remain readable, but many lower-level notes become illegible once exported at very large canvas widths. The safest artifact is a flow document that separates directly readable labels from inferred flow steps.
+
+**Evidence:**
+- Both source images were 32768 pixels wide, which made the full-board preview unreadable.
+- Cropped views exposed section titles clearly but not every subordinate note, especially on the MFA board.
+- The doctor board still yielded enough readable labels to confirm the main structure and a subset of detailed tasks.
+
+**Impact on Approach:**
+- Translate wide boards by using the visible lane structure first.
+- Mark any reconstructed detail as inferred instead of presenting it as exact source text.
+
+**Lesson Learned:**
+For large journey maps, preserve confidence levels in the artifact: direct transcription where visible, explicit inference where not.
+
+**Tags:** [Reusable]
+
 ## KL-W001: Token Bridge CSS For Static HTML Previews [Experiment]
 
 **Date:** 2026-03-12

@@ -1,12 +1,11 @@
 # CorePVS — Project Context
 
-**Version:** 1.0.0
-**Last Updated:** 2026-03-12
+**Version:** 1.1.0
+**Last Updated:** 2026-03-13
 
 **See also:**
-- Visual guidelines: `<!-- TBD — visual guideline document not yet created -->`
-- Roadmap: `PRD260311-pvs-core-roadmap.md`
-- DMEA use cases: `SCOP260312-use-cases-demo.md`
+- Design system: [tini-library](https://github.com/tini-works/tini-library)
+- Copy & tone: `..docs/guidelines/copy-guidelines.md`
 
 ---
 
@@ -14,36 +13,7 @@
 
 Independent, certification-ready components that compose into a white-label practice management system.
 
-**Target vision (DMEA):** "The PVS that masters MVZ complexity — intelligent, connected, scalable."
-
-**Brand promise:** `<!-- TBD -->`
-
-> **Rationale:** CorePVS is a white-label product — Dedalus is one potential customer (not yet signed), not the brand itself. The brand promise must reflect the product's own identity independent of any customer branding. The Notion brief confirms the "tailor model": customers pick a baseline and customize 20–30%. A brand promise needs PM input to define what CorePVS stands for before customer-specific branding layers are applied.
-
----
-
-## Current Scope
-
-Two parallel work streams:
-
-| Work Stream | Timeline | Focus |
-|-------------|----------|-------|
-| **Core PVS Prototype (DMEA)** | April 7–10, 2026 | 2 use cases for trade fair demo |
-| **Core PVS (ongoing)** | Building modular, certification-ready components | Phase 1 first |
-
-### Feature Status
-
-| Feature Area | Status |
-|-------------|--------|
-| Patient Data Management (Phase 1) | In progress |
-| Diagnosis, Coding & Service Documentation (Phase 2) | Planned |
-| Billing & Submission (Phase 3) | Planned |
-| Prescription Management / E-Rezept (Phase 4) | Planned |
-| Forms, eAU & ePA (Phase 5) | Planned |
-| eDMP / eDocumentation (Phase 6) | Planned |
-| Foundation & Practice Infrastructure (Phase 7) | Planned |
-
-**Total estimated requirements across all phases: ~1,028**
+**Target vision:** "The PVS that masters MVZ complexity — intelligent, connected, scalable."
 
 ---
 
@@ -93,6 +63,33 @@ A modular PVS built natively for MVZ complexity:
 - **Decision support, not automation** — system suggests next steps, never auto-executes
 - **White-label, certification-ready components** — each component is a standalone mini-app that composes into a full PVS
 - **Complete patient pathway** — from hospital admission through MVZ treatment to case closure, all in one connected flow
+
+---
+
+## Value Proposition
+
+### For MVZ operations
+
+- **Reduction of idle times** through intelligent appointment control
+- **Fewer incorrect bookings** due to automated resource logic
+- **Improved utilization of expensive resources** (especially CT/MRI)
+- **Higher quality of care** through complete, up-to-date patient data
+- **Improved patient satisfaction** — fewer waiting times, fewer duplicate examinations
+- **First PVS to give MVZ leadership real operational transparency**
+
+### Differentiator vs. single-practice PVS
+
+Orchestration across locations, specialties, and resources. Single-practice systems treat each location as an island. CorePVS treats the entire MVZ as one connected organization.
+
+---
+
+## Competitive Landscape
+
+From source documents: "clear differentiation from single-practice PVS" is the primary positioning.
+
+`<!-- TBD: competitive analysis -->`
+
+> **Rationale:** The use-cases-demo document positions CorePVS as "clear differentiation from single-practice PVS." However, no source document names specific competitors or analyzes their MVZ capabilities. Market research is needed to map competitors (e.g., CGM TURBOMED, medatixx, T2med, x.isynet), assess which ones target MVZs, and build a positioning matrix. The key question: does any existing PVS offer cross-location orchestration, or is that genuinely unoccupied territory?
 
 ---
 
@@ -165,55 +162,21 @@ Core tasks:
 
 ---
 
-## Value Proposition
+## Current Scope
 
-### For MVZ operations
+Building modular, certification-ready components. Phase 1 first.
 
-- **Reduction of idle times** through intelligent appointment control
-- **Fewer incorrect bookings** due to automated resource logic
-- **Improved utilization of expensive resources** (especially CT/MRI)
-- **Higher quality of care** through complete, up-to-date patient data
-- **Improved patient satisfaction** — fewer waiting times, fewer duplicate examinations
-- **First PVS to give MVZ leadership real operational transparency**
+### Feature Status
 
-### Trade fair pitch (30 seconds)
-
-> "We manage appointments, resources, and patient information across locations — and for the first time give MVZ leadership real operational transparency. Less chaos, better utilization, better care."
-
-### Differentiator vs. single-practice PVS
-
-Orchestration across locations, specialties, and resources. Single-practice systems treat each location as an island. CorePVS treats the entire MVZ as one connected organization.
-
----
-
-## Competitive Landscape
-
-From source documents: "clear differentiation from single-practice PVS" is the primary positioning.
-
-`<!-- TBD: competitive analysis -->`
-
-> **Rationale:** The use-cases-demo document positions CorePVS as "clear differentiation from single-practice PVS" and the trade fair pitch emphasizes being the "first PVS to give MVZ leadership real operational transparency." However, no source document names specific competitors or analyzes their MVZ capabilities. Market research is needed to map competitors (e.g., CGM TURBOMED, medatixx, T2med, x.isynet), assess which ones target MVZs, and build a positioning matrix. The key question: does any existing PVS offer cross-location orchestration, or is that genuinely unoccupied territory?
-
----
-
-## Product Architecture (the "Lego Model")
-
-- **Each component = fully working mini-app** (frontend + backend), stands alone
-- **White-label**: baseline components get customer-specific branding via design system theming layer
-- **Certification-ready baseline**: ~70–80% reused across customers unchanged
-- **Customer customization: ~20–30%** — certification constrains how much can diverge
-- **After branching for a customer, each version is independent** — changes for one don't affect others
-- **No over-engineering for reusability** — focus on solid, certification-ready components; the baseline quality is what matters most
-- **Build slim GUI/UX on top of Core PVS Backend** — no external interfaces at this stage
-- **Components = big subpages**, not small UI pieces — think independent, modular components
-
-### What designers produce per component
-
-1. **Screens** — every screen with all states (empty, error, loading, current, etc.)
-2. **Flows** — step-by-step user journeys
-3. **Transitions** — how one state leads to another
-
-**Definition of done:** every PM requirement is checkable against the screens, flows, and transitions.
+| Feature Area | Status |
+|-------------|--------|
+| Patient Data Management (Phase 1) | In progress |
+| Diagnosis, Coding & Service Documentation (Phase 2) | Planned |
+| Billing & Submission (Phase 3) | Planned |
+| Prescription Management / E-Rezept (Phase 4) | Planned |
+| Forms, eAU & ePA (Phase 5) | Planned |
+| eDMP / eDocumentation (Phase 6) | Planned |
+| Foundation & Practice Infrastructure (Phase 7) | Planned |
 
 ---
 
@@ -244,24 +207,6 @@ System backbone — master data, user/access control, TI reporting, and HZV/FAV 
 
 ---
 
-## DMEA Demo Use Cases
-
-Two use cases designed for the DMEA trade fair (April 7–10, 2026). Full details in `SCOP260312-use-cases-demo.md`.
-
-### Use Case 1: Integrated Patient Pathway (HIS ↔ MVZ)
-
-An adult patient presents at a hospital emergency department. After triage, they're referred to a connected MVZ. The demo shows: structured data transfer from HIS to PVS via HL7/FHIR, clear visual separation of external (read-only) vs. own documentation (editable), digital referral for CT examination back at the hospital, intelligent appointment scheduling considering specialty/device/location, real-time CT report transfer back to MVZ, and complete case documentation and closure.
-
-**Key message:** No media disruption, no duplicate data entry, seamless cross-sector care.
-
-### Use Case 2: Smart PVS Dashboard for MVZ Operational Control
-
-A real-time dashboard for MVZ management showing operational KPIs across all locations using traffic-light logic. The demo shows: high-level overview with red/yellow/green indicators per location, drill-down into no-show patterns by weekday/time/specialty, practitioner-level performance insights (operational, not quality judgment), resource utilization with concrete rebalancing recommendations, and actionable next steps (suggested, never auto-executed).
-
-**Key message:** Data-driven steering instead of gut feeling. First PVS with real MVZ operational transparency.
-
----
-
 ## Design Constraints
 
 | Constraint | Rationale |
@@ -270,24 +215,29 @@ A real-time dashboard for MVZ management showing operational KPIs across all loc
 | No responsive / no mobile | Not needed for MFA/doctor workflows |
 | White-label ready | Product serves multiple customers with their branding |
 | Certification scope | ~70–80% baseline must pass certification unchanged |
-| Visual guidelines | TBD (see rationale below) |
-
-> **Rationale (Visual guidelines):** The Notion brief explicitly states that Dedalus is a potential customer, not the brand. Brand/styling changes are handled via a design system theming layer. This means CorePVS needs its own product-level visual identity (colors, typography, spacing, component styles) that serves as the certification-ready baseline *before* customer theming is applied. No visual guideline document exists yet.
+| Design system | [tini-library](https://github.com/tini-works/tini-library) — baseline visual identity; customer theming applied on top |
 | German-language UI | Primary market; domain terms are German healthcare standards |
 
 ---
 
-## UX Pillars / Primary Axis
+## Primary UX Axes
 
-`<!-- TBD: primary UX axis -->`
+Three measurable axes that guide every design decision:
 
-> **Rationale:** No source document defines a formal UX axis (like jelvo's "Trust + Efficiency + Humanity"). The hints below are extracted from the use-cases-demo (dashboard patterns emphasize transparency) and the Notion brief (certification quality is non-negotiable, components must handle MVZ complexity natively). These are recurring themes, not deliberate design decisions. The UX/design team needs to formalize which 2–3 pillars define *how CorePVS should feel* — not just what it does — so that every design decision can be tested against them.
+### Speed
+Time to complete key tasks.
 
-Hints from existing documentation that can seed the discussion:
+`<!-- TBD: targets per UX moment (e.g., registration <2 min, diagnosis coding <30s) -->`
 
-- **Operational transparency** — the dashboard use case centers on making the invisible visible
-- **Certification compliance** — baseline quality is non-negotiable; every screen must be certification-ready
-- **MVZ-native complexity handling** — multi-location, multi-specialty, multi-practitioner as first-class concepts, not afterthoughts
+### Safety / Clarity
+Read-only vs. editable is unambiguous at a glance.
+
+`<!-- TBD: how measured (e.g., user can identify editable fields within X seconds, zero misclicks on read-only data) -->`
+
+### Density
+Supports high-volume clinical workflow without "scroll hunting."
+
+`<!-- TBD: measurable criteria (e.g., key actions visible without scrolling on 24" monitor, information density benchmarks) -->`
 
 ---
 
@@ -395,4 +345,5 @@ Key German healthcare terms used throughout CorePVS documentation and UI.
 
 | Version | Date | Who | Changes |
 |---------|------|-----|---------|
+| 1.1.0 | 2026-03-13 | Ngan | Remove DMEA-specific content (demo use cases, trade fair pitch, brand promise, event timeline); add primary UX axes (Speed, Safety/Clarity, Density) |
 | 1.0.0 | 2026-03-12 | Ngan | Initial structure with partial content from roadmap, use cases, and Notion brief |
